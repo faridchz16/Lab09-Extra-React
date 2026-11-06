@@ -202,16 +202,59 @@ IA se hace en la Parte 3 con las respuestas fijas de `src/duel/ai/`.
 
 ## 4. Parte 3 — El duelo con la IA (`npm run duel:ai`)
 
-| Tarea | Componente | ¿Falla? | Clasificación (ruidoso / avisa / silencioso) | Qué ocurrió |
+### Pasos 8 y 9 — Las respuestas de la IA contra el verificador
+
+Se usó el subagente `test-reviewer` para ejecutar `npm run duel:ai` y clasificar cada fallo.
+La salida real está en `Evidencias_extra/12_duel_ai.txt` / `.png`.
+
+```text
+ Test Files  6 failed | 2 passed (8)
+      Tests  14 failed | 29 passed (43)
+```
+
+| Tarea | Componente | ¿Falla? | Clasificación | Qué ocurrió |
 |---|---|---|---|---|
-| T1 | Header | | | |
-| T2 | Footer | | | |
-| T3 | MovieCard | | | |
-| T4 | Showtimes | | | |
-| T5 | MovieList | | | |
-| T6 | Synopsis | | | |
-| T7 | Hero | | | |
-| T8 | AgentMessage | | | |
+| T1 | Header | No (5/5) | — | Correcto. |
+| T2 | Footer | Sí (5/6) | **avisa** | `class` en vez de `className`. |
+| T3 | MovieCard | Sí (5/6) | **silencioso** | `<img>` sin `alt`. |
+| T4 | Showtimes | Sí (4/6) | **silencioso** | `!times` nunca es cierto con `[]` y `times.length && …` dibuja un `0`. |
+| T5 | MovieList | Sí (3/5) | **silencioso** | `key={index}`. |
+| T6 | Synopsis | Sí (2/5) | **silencioso** | `dangerouslySetInnerHTML`: XSS. |
+| T7 | Hero | Sí (0/5) | **ruidoso** | El prop se llama `film`, pero se pasa `movie`. |
+| T8 | AgentMessage | No (5/5) | — | Correcto. |
+
+Resumen: 6 de 8 tareas fallan, con **1 ruidosa** (T7), **1 que avisa** (T2) y **4 silenciosas**
+(T3, T4, T5, T6).
+
+**Detalle de los 6 fallos**
+
+| Tarea | Qué hizo la IA | Prueba que falla | Mensaje | Clase |
+|---|---|---|---|---|
+| T2 `Footer` | `<footer class="footer">` (`ai/Footer.jsx:3`) | «no produce avisos de React en la consola (usa className, no class)» | `AssertionError: expected [ Array(1) ] to deeply equal []`; el aviso capturado es ``Invalid DOM property `class`. Did you mean `className`?`` | **avisa**: se dibuja bien, pero React imprime un aviso en `console.error` y `watchConsole` lo atrapa. |
+| T3 `MovieCard` | `<img src={movie.image} />` sin `alt` (`ai/MovieCard.jsx:4`) | «la imagen tiene como texto alternativo el título de la película» | `TestingLibraryElementError: Unable to find an element with the alt text: La Última Función` | **silencioso**: React no avisa de un `alt` que falta; solo la consulta por texto alternativo lo detecta. |
+| T4 `Showtimes` | `if (!times)` (un `[]` es *truthy*) y `{times.length && <ul>…}` (`ai/Showtimes.jsx:2,8`) | «con lista vacía muestra el mensaje «Sin funciones hoy»» y «con lista vacía no imprime un 0 suelto» | `Unable to find an element with the text: Sin funciones hoy` y `AssertionError: expected '0' to be 'Sin funciones hoy'` (el DOM es `<div class="showtimes">0</div>`) | **silencioso**: `0 && x` vale `0` y React dibuja los números; no hay error ni aviso. |
+| T5 `MovieList` | `movies.map((movie, index) => <li key={index}>…)` (`ai/MovieList.jsx:6-7`) | «al invertir el orden, cada película conserva su propio nodo del DOM» y «al quitar la primera película, las demás conservan su nodo del DOM» | `AssertionError: expected <li><article …(1)>…(3)</article></li> to be <li>… // Object.is equality`; el `<li>` de «Medianoche en Lima» ahora contiene «La Última Función» | **silencioso**: hay `key`, así que React no avisa; el error solo aparece al reordenar. |
+| T6 `Synopsis` | `dangerouslySetInnerHTML={{ __html: text.replace(/\n/g, "<br />") }}` (`ai/Synopsis.jsx:2-3`) | «…se muestra como texto literal…», «…no crea elementos nuevos (ni img ni b)», «…no ejecuta código: window.__xss queda sin definir» | `expected 'Gran estreno  no te lo pierdas' to be 'Gran estreno <img src=x onerror="wind…'`, `expected <img src="x" …(1)></img> to have a length of +0 but got 2` y `AssertionError: expected 1 to be undefined` | **silencioso**: es una API válida, no avisa y con texto normal funciona; con datos hostiles inyecta el `<img>` y su `onerror` se ejecuta (`window.__xss = 1`). |
+| T7 `Hero` | `function Hero({ film })` … `<h2>{film.title}</h2>` (`ai/Hero.jsx:1,4`) | Las 5 pruebas | `TypeError: Cannot read properties of undefined (reading 'title')`; la primera falla como `expected [Function] to not throw an error but 'TypeError: …' was thrown` | **ruidoso**: `film` es `undefined`, el render lanza una excepción y la página entera se cae. |
+
+**¿Por qué T1 y T8 no fallan?**
+
+- **T1 `Header`:** la IA usó exactamente la semántica que pide el verificador. `<header>` da el
+  rol `banner`, `<h1>{name}</h1>` el encabezado de nivel 1, y hay
+  `<nav aria-label="Principal">` con `<ul>`, un `<li>` por enlace y
+  `<a href={link.href}>{link.label}</a>`. Cada `<li>` lleva una key estable
+  (`key={link.href}`, no el índice), no usa `class` y todo sale de los props, así que con «Cine
+  Norte» o «Alfa/Beta» también funciona. Además, la lista de enlaces nunca se reordena en las
+  pruebas.
+- **T8 `AgentMessage`:** usa `className`, `<strong>{author}:</strong>` y
+  `<span>{text}</span>` dentro de un solo `<p>`. El texto del agente entra como hijo JSX
+  (`{text}`), que React escapa, así que el mensaje hostil se ve literal, no crea `img`/`b` y
+  `window.__xss` queda `undefined`. Es justo lo contrario de lo que hizo la misma IA en T6: el
+  riesgo no depende del dato, sino de cómo se inserta.
+
+**Lección:** solo 1 de los 6 fallos es ruidoso (se ve al abrir la página). Los otros 5 pasarían
+una revisión «a ojo»: la página se ve bien y la consola, salvo T2, está limpia. Por eso hace
+falta un verificador automático.
 
 ## 5. Parte 4 — Arreglo de la copia de la IA (`npm run duel:fixed`)
 
