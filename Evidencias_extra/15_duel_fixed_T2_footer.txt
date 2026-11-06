@@ -1,0 +1,295 @@
+
+> dae-s09-react-ia@0.1.0 duel:fixed
+> vitest run --mode fixed src/duel
+
+
+ RUN  v3.2.7 E:/ClaudeCode/Lab09-Extra-React
+
+ ✓ src/duel/tests/T8-agentmessage.test.jsx (5 tests) 32ms
+ ❯ src/duel/tests/T6-synopsis.test.jsx (5 tests | 3 failed) 43ms
+   ✓ [fixed] T6 Synopsis > no produce avisos de React en la consola 16ms
+   ✓ [fixed] T6 Synopsis > un texto normal se muestra tal cual dentro de un párrafo 6ms
+   × [fixed] T6 Synopsis > la sinopsis hostil se muestra como texto literal, con sus etiquetas a la vista 10ms
+     → expected 'Gran estreno  no te lo pierdas' to be 'Gran estreno <img src=x onerror="wind…' // Object.is equality
+   × [fixed] T6 Synopsis > la sinopsis hostil no crea elementos nuevos en la página (ni img ni b) 6ms
+     → expected <img src="x" …(1)></img>
+<b></b> to have a length of +0 but got 2
+   × [fixed] T6 Synopsis > la sinopsis hostil no ejecuta código: window.__xss queda sin definir 4ms
+     → expected 1 to be undefined
+ ✓ src/duel/tests/T2-footer.test.jsx (6 tests) 83ms
+ ✓ src/duel/tests/T7-hero.test.jsx (5 tests) 84ms
+ ❯ src/duel/tests/T4-showtimes.test.jsx (6 tests | 2 failed) 82ms
+   ✓ [fixed] T4 Showtimes > no produce avisos de React en la consola 16ms
+   ✓ [fixed] T4 Showtimes > con horas dibuja una lista con un elemento por hora, en orden 47ms
+   ✓ [fixed] T4 Showtimes > con horas no muestra el mensaje de que no hay funciones 3ms
+   × [fixed] T4 Showtimes > con lista vacía muestra el mensaje «Sin funciones hoy» 10ms
+     → Unable to find an element with the text: Sin funciones hoy. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"showtimes"[39m
+    [36m>[39m
+      [0m0[0m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × [fixed] T4 Showtimes > con lista vacía no imprime un 0 suelto: el único texto es el mensaje 4ms
+     → expected '0' to be 'Sin funciones hoy' // Object.is equality
+   ✓ [fixed] T4 Showtimes > con lista vacía no dibuja una lista 1ms
+ ❯ src/duel/tests/T3-moviecard.test.jsx (6 tests | 1 failed) 99ms
+   ✓ [fixed] T3 MovieCard > no produce avisos de React en la consola 16ms
+   ✓ [fixed] T3 MovieCard > es un artículo (rol article) 42ms
+   × [fixed] T3 MovieCard > la imagen tiene como texto alternativo el título de la película 12ms
+     → Unable to find an element with the alt text: La Última Función
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<article[39m
+      [33mclass[39m=[32m"movie-card"[39m
+    [36m>[39m
+      [36m<img[39m
+        [33msrc[39m=[32m"/posters/1.svg"[39m
+      [36m/>[39m
+      [36m<h3>[39m
+        [0mLa Última Función[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0m★ [0m
+        [0m4.5[0m
+      [36m</p>[39m
+    [36m</article>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ✓ [fixed] T3 MovieCard > el título es un encabezado de nivel 3 13ms
+   ✓ [fixed] T3 MovieCard > la valoración se muestra como texto con una estrella 4ms
+   ✓ [fixed] T3 MovieCard > con otra película muestra los datos de esa película 10ms
+ ✓ src/duel/tests/T1-header.test.jsx (5 tests) 105ms
+ ❯ src/duel/tests/T5-movielist.test.jsx (5 tests | 2 failed) 209ms
+   ✓ [fixed] T5 MovieList > no produce avisos de React en la consola (cada elemento lleva su key) 21ms
+   ✓ [fixed] T5 MovieList > dibuja una lista con un elemento por película, en el mismo orden 85ms
+   ✓ [fixed] T5 MovieList > cada elemento contiene una tarjeta (un article) 17ms
+   × [fixed] T5 MovieList > al invertir el orden, cada película conserva su propio nodo del DOM 49ms
+     → expected <li><article …(1)>…(3)</article></li> to be <li><article …(1)>…(3)</article></li> // Object.is equality
+   × [fixed] T5 MovieList > al quitar la primera película, las demás conservan su nodo del DOM 36ms
+     → expected <li><article …(1)>…(3)</article></li> to be <li><article …(1)>…(3)</article></li> // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/duel/tests/T3-moviecard.test.jsx > [fixed] T3 MovieCard > la imagen tiene como texto alternativo el título de la película
+TestingLibraryElementError: Unable to find an element with the alt text: La Última Función
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<article[39m
+      [33mclass[39m=[32m"movie-card"[39m
+    [36m>[39m
+      [36m<img[39m
+        [33msrc[39m=[32m"/posters/1.svg"[39m
+      [36m/>[39m
+      [36m<h3>[39m
+        [0mLa Última Función[0m
+      [36m</h3>[39m
+      [36m<p>[39m
+        [0m★ [0m
+        [0m4.5[0m
+      [36m</p>[39m
+    [36m</article>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/duel/tests/T3-moviecard.test.jsx:30:21
+     28|     for (const movie of movies) {
+     29|       const { unmount } = render(<MovieCard movie={movie} />);
+     30|       expect(screen.getByAltText(movie.title)).toBeInTheDocument();
+       |                     ^
+     31|       expect(screen.getByRole("img", { name: movie.title })).toHaveAtt…
+     32|       unmount();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/duel/tests/T4-showtimes.test.jsx > [fixed] T4 Showtimes > con lista vacía muestra el mensaje «Sin funciones hoy»
+TestingLibraryElementError: Unable to find an element with the text: Sin funciones hoy. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"showtimes"[39m
+    [36m>[39m
+      [0m0[0m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/duel/tests/T4-showtimes.test.jsx:38:19
+     36|   test("con lista vacía muestra el mensaje «Sin funciones hoy»", () =>…
+     37|     render(<Showtimes times={movies[4].showtimes} />);
+     38|     expect(screen.getByText(MESSAGE)).toBeInTheDocument();
+       |                   ^
+     39|   });
+     40| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/duel/tests/T4-showtimes.test.jsx > [fixed] T4 Showtimes > con lista vacía no imprime un 0 suelto: el único texto es el mensaje
+AssertionError: expected '0' to be 'Sin funciones hoy' // Object.is equality
+
+Expected: "Sin funciones hoy"
+Received: "0"
+
+ ❯ src/duel/tests/T4-showtimes.test.jsx:43:35
+     41|   test("con lista vacía no imprime un 0 suelto: el único texto es el m…
+     42|     const { container } = render(<Showtimes times={[]} />);
+     43|     expect(container.textContent).toBe(MESSAGE);
+       |                                   ^
+     44|   });
+     45| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  src/duel/tests/T5-movielist.test.jsx > [fixed] T5 MovieList > al invertir el orden, cada película conserva su propio nodo del DOM
+AssertionError: expected <li><article …(1)>…(3)</article></li> to be <li><article …(1)>…(3)</article></li> // Object.is equality
+
+- Expected
++ Received
+
+  <li>
+    <article
+      class="movie-card"
+    >
+      <img
+-       src="/posters/8.svg"
++       src="/posters/1.svg"
+      />
+      <h3>
+-       Medianoche en Lima
++       La Última Función
+      </h3>
+      <p>
+        ★ 
+-       3.9
++       4.5
+      </p>
+    </article>
+  </li>
+
+ ❯ src/duel/tests/T5-movielist.test.jsx:46:29
+     44|     rerender(<MovieList movies={[...movies].reverse()} />);
+     45|     movies.forEach((movie, i) => {
+     46|       expect(itemOf(movie)).toBe(before[i]);
+       |                             ^
+     47|     });
+     48|   });
+ ❯ src/duel/tests/T5-movielist.test.jsx:45:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  src/duel/tests/T5-movielist.test.jsx > [fixed] T5 MovieList > al quitar la primera película, las demás conservan su nodo del DOM
+AssertionError: expected <li><article …(1)>…(3)</article></li> to be <li><article …(1)>…(3)</article></li> // Object.is equality
+
+- Expected
++ Received
+
+  <li>
+    <article
+      class="movie-card"
+    >
+      <img
+-       src="/posters/3.svg"
++       src="/posters/2.svg"
+      />
+      <h3>
+-       Código Fantasma
++       Noche en el Altiplano
+      </h3>
+      <p>
+        ★ 
+-       3.8
++       4.2
+      </p>
+    </article>
+  </li>
+
+ ❯ src/duel/tests/T5-movielist.test.jsx:55:29
+     53|     rerender(<MovieList movies={movies.slice(1)} />);
+     54|     movies.slice(1).forEach((movie, i) => {
+     55|       expect(itemOf(movie)).toBe(before[i + 1]);
+       |                             ^
+     56|     });
+     57|     expect(screen.queryByRole("heading", { name: movies[0].title })).n…
+ ❯ src/duel/tests/T5-movielist.test.jsx:54:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  src/duel/tests/T6-synopsis.test.jsx > [fixed] T6 Synopsis > la sinopsis hostil se muestra como texto literal, con sus etiquetas a la vista
+AssertionError: expected 'Gran estreno  no te lo pierdas' to be 'Gran estreno <img src=x onerror="wind…' // Object.is equality
+
+Expected: "Gran estreno <img src=x onerror="window.__xss=1"> <b>no te lo pierdas</b>"
+Received: "Gran estreno  no te lo pierdas"
+
+ ❯ src/duel/tests/T6-synopsis.test.jsx:33:54
+     31|   test("la sinopsis hostil se muestra como texto literal, con sus etiq…
+     32|     const { container } = render(<Synopsis text={hostile} />);
+     33|     expect(container.querySelector("p").textContent).toBe(hostile);
+       |                                                      ^
+     34|   });
+     35| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  src/duel/tests/T6-synopsis.test.jsx > [fixed] T6 Synopsis > la sinopsis hostil no crea elementos nuevos en la página (ni img ni b)
+AssertionError: expected <img src="x" …(1)></img>
+<b></b> to have a length of +0 but got 2
+
+- Expected
++ Received
+
+- 0
++ 2
+
+ ❯ src/duel/tests/T6-synopsis.test.jsx:38:58
+     36|   test("la sinopsis hostil no crea elementos nuevos en la página (ni i…
+     37|     const { container } = render(<Synopsis text={hostile} />);
+     38|     expect(container.querySelectorAll("img, b, script")).toHaveLength(…
+       |                                                          ^
+     39|   });
+     40| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  src/duel/tests/T6-synopsis.test.jsx > [fixed] T6 Synopsis > la sinopsis hostil no ejecuta código: window.__xss queda sin definir
+AssertionError: expected 1 to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+1
+
+ ❯ src/duel/tests/T6-synopsis.test.jsx:44:23
+     42|     const { container } = render(<Synopsis text={hostile} />);
+     43|     failImages(container);
+     44|     expect(xssFlag()).toBeUndefined();
+       |                       ^
+     45|   });
+     46| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  4 failed | 4 passed (8)
+      Tests  8 failed | 35 passed (43)
+   Start at  20:49:53
+   Duration  1.62s (transform 238ms, setup 1.27s, collect 1.52s, tests 738ms, environment 5.65s, prepare 1.09s)
+
+EXIT=1

@@ -1,6 +1,6 @@
 export default function Footer({ contact }) {
   return (
-    <footer class="footer">
+    <footer className="footer">
       <p>{contact.address}</p>
       <p>
         <a href={`tel:${contact.phone}`}>{contact.phone}</a>
