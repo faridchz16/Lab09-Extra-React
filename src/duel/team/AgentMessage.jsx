@@ -1,7 +1,10 @@
-// TODO(team) · Task 8
-// Props: author (string), text (string produced by an AI agent).
-// Returns <p><strong>{author}:</strong> <span>{text}</span></p>.
-// The agent's text is always shown as text, never as HTML.
+// Task 8 · A message produced by an AI agent.
+// Props: author (string), text (string from the agent, untrusted).
+// Both go through {…}, so React escapes them and markup in the text is shown, never run.
 export default function AgentMessage({ author, text }) {
-  throw new Error("TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx");
+  return (
+    <p className="agent-message">
+      <strong>{author}:</strong> <span>{text}</span>
+    </p>
+  );
 }

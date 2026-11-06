@@ -1,0 +1,5 @@
+Console of http://localhost:5173 (page, 1440x900)
+[2026-11-06T01:46:13.693Z] [console.debug] [vite] connecting...
+[2026-11-06T01:46:13.709Z] [console.debug] [vite] connected.
+[2026-11-06T01:46:13.737Z] [console.info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[2026-11-06T01:46:15.492Z] [capture] window.__xss = undefined
