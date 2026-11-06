@@ -1,7 +1,16 @@
-// TODO(team) · Task 5
+// Task 5 · The billboard: one card per movie.
 // Props: movies (array of movie objects).
-// Returns a <ul> with one <li> per movie, each holding a <MovieCard>.
-// Every <li> needs a key that identifies the movie.
+import MovieCard from "./MovieCard.jsx";
+
 export default function MovieList({ movies }) {
-  throw new Error("TODO(team): write MovieList in src/duel/team/MovieList.jsx");
+  return (
+    <ul className="movie-list">
+      {/* The key is the movie id, so each movie keeps its own DOM node when the list changes. */}
+      {movies.map((movie) => (
+        <li key={movie.id}>
+          <MovieCard movie={movie} />
+        </li>
+      ))}
+    </ul>
+  );
 }
