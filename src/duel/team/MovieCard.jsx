@@ -3,5 +3,11 @@
 // Returns an <article> with an <img src alt> (the alt is the title), an <h3> with
 // the title and the rating as text, e.g. "★ 4.5".
 export default function MovieCard({ movie }) {
-  throw new Error("TODO(team): write MovieCard in src/duel/team/MovieCard.jsx");
+  return (
+    <article>
+      <img src={movie.image} alt={movie.title} />
+      <h3>{movie.title}</h3>
+      <p>★ {movie.rating}</p>
+    </article>
+  );
 }
