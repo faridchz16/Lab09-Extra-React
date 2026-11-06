@@ -1,0 +1,60 @@
+
+> dae-s09-react-ia@0.1.0 duel
+> vitest run --mode team src/duel
+
+
+ RUN  v3.2.7 E:/ClaudeCode/Lab09-Extra-React
+
+ ❯ src/duel/tests/T8-agentmessage.test.jsx (5 tests | 5 failed) 22ms
+   × [team] T8 AgentMessage > no produce avisos de React en la consola 16ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+   × [team] T8 AgentMessage > el autor va en negrita (strong) seguido de dos puntos 1ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+   × [team] T8 AgentMessage > el texto va en un span dentro del mismo párrafo 1ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+   × [team] T8 AgentMessage > el texto de un agente con etiquetas se muestra literal, nunca como HTML 1ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+   × [team] T8 AgentMessage > el texto de un agente no ejecuta código: window.__xss queda sin definir 1ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+ ✓ src/duel/tests/T6-synopsis.test.jsx (5 tests) 26ms
+ ✓ src/duel/tests/T4-showtimes.test.jsx (6 tests) 74ms
+ ✓ src/duel/tests/T7-hero.test.jsx (5 tests) 85ms
+ ✓ src/duel/tests/T2-footer.test.jsx (6 tests) 91ms
+ ✓ src/duel/tests/T1-header.test.jsx (5 tests) 88ms
+ ✓ src/duel/tests/T3-moviecard.test.jsx (6 tests) 106ms
+ ✓ src/duel/tests/T5-movielist.test.jsx (5 tests) 217ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > no produce avisos de React en la consola
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > el autor va en negrita (strong) seguido de dos puntos
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > el texto va en un span dentro del mismo párrafo
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > el texto de un agente con etiquetas se muestra literal, nunca como HTML
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > el texto de un agente no ejecuta código: window.__xss queda sin definir
+Error: TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+ ❯ AgentMessage src/duel/team/AgentMessage.jsx:6:9
+      4| // The agent's text is always shown as text, never as HTML.
+      5| export default function AgentMessage({ author, text }) {
+      6|   throw new Error("TODO(team): write AgentMessage in src/duel/team/Age…
+       |         ^
+      7| }
+      8| 
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:28571:20
+ ❯ renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:8030:22
+ ❯ updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10569:19
+ ❯ beginWork node_modules/react-dom/cjs/react-dom-client.development.js:12205:18
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:19176:22
+ ❯ workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:19004:41
+ ❯ renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:18985:11
+ ❯ performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:18094:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  5 failed | 38 passed (43)
+   Start at  20:45:48
+   Duration  1.66s (transform 229ms, setup 1.28s, collect 1.52s, tests 709ms, environment 5.86s, prepare 1.09s)
+
+EXIT=1

@@ -1,7 +1,10 @@
-// TODO(team) · Task 7
-// Props: movie (a movie object).
-// Returns a <section aria-label="Destacada"> with an <h2> holding the title and a
-// link "Ver horarios" that points to #horarios-<id>.
+// Task 7 · Featured movie banner.
+// Props: movie (a movie object). The prop is called `movie`, as App passes it.
 export default function Hero({ movie }) {
-  throw new Error("TODO(team): write Hero in src/duel/team/Hero.jsx");
+  return (
+    <section aria-label="Destacada" className="hero">
+      <h2>{movie.title}</h2>
+      <a href={`#horarios-${movie.id}`}>Ver horarios</a>
+    </section>
+  );
 }
