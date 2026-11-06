@@ -4,7 +4,7 @@
 // the title and the rating as text, e.g. "★ 4.5".
 export default function MovieCard({ movie }) {
   return (
-    <article>
+    <article className="movie-card">
       <img src={movie.image} alt={movie.title} />
       <h3>{movie.title}</h3>
       <p>★ {movie.rating}</p>

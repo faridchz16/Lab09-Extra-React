@@ -7,7 +7,7 @@ export default function Showtimes({ times }) {
   }
 
   return (
-    <ul>
+    <ul className="showtimes">
       {times.map((time) => (
         <li key={time}>{time}</li>
       ))}
