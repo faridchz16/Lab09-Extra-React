@@ -136,16 +136,69 @@ componente que escribamos tiene que pasarlo a verde.
 
 ## 3. Parte 2 — Mis ocho componentes (`npm run duel`)
 
-| Tarea | Componente | Resultado | Commit |
-|---|---|---|---|
-| T1 | Header | | |
-| T2 | Footer | | |
-| T3 | MovieCard | | |
-| T4 | Showtimes | | |
-| T5 | MovieList | | |
-| T6 | Synopsis | | |
-| T7 | Hero | | |
-| T8 | AgentMessage | | |
+### Herramientas de evidencias
+
+Antes de empezar se prepararon tres scripts (Playwright 1.64.1 vía `npx`, sin añadirlo a
+`package.json`):
+
+- `scripts/capture.mjs <salida.png> [--selector=CSS] [--viewport]`: captura
+  `http://localhost:5173` a 1440×900 (página completa o un selector) y guarda los mensajes de la
+  consola del navegador en un `.txt` con el mismo nombre (al final anota el valor de
+  `window.__xss`).
+- `scripts/terminal.mjs <salida.txt>`: convierte una salida de pruebas en un PNG con aspecto de
+  terminal oscura. No cambia el texto, solo lo colorea por líneas (verde ✓, rojo ×/FAIL).
+- `scripts/evidence.sh <script> <nombre>`: ejecuta `npm run <script>` sin colores, guarda la
+  salida real en `Evidencias_extra/<nombre>.txt` (con el código de salida al final) y genera
+  su `.png`.
+
+Con `terminal.mjs` se creó `02_duel_inicial.png` a partir de `02_duel_inicial.txt`.
+
+### Pasos 5 y 6 — Escribir los componentes de uno en uno
+
+Se escribió cada componente en `src/duel/team/`, se ejecutó `npm run duel` justo después y se
+hizo un commit por componente. Todos pasaron en el **primer intento**; la columna «Duel» muestra
+el total acumulado después de cada uno.
+
+| Tarea | Componente | Intentos | Pruebas de la tarea | Duel tras el cambio | Evidencia | Commit |
+|---|---|---|---|---|---|---|
+| T1 | `Header` | 1 | 5/5 ✅ | 5/43 | `03_duel_T1_header` | `7e4335f` |
+| T2 | `Footer` | 1 | 6/6 ✅ | 11/43 | `04_duel_T2_footer` | `21d2d97` |
+| T3 | `MovieCard` | 1 | 6/6 ✅ | 17/43 | `05_duel_T3_moviecard` | `932fe28` |
+| T4 | `Showtimes` | 1 | 6/6 ✅ | 23/43 | `06_duel_T4_showtimes` | `65fb6c5` |
+| T5 | `MovieList` | 1 | 5/5 ✅ | 28/43 | `07_duel_T5_movielist` | `0868e71` |
+| T6 | `Synopsis` | 1 | 5/5 ✅ | 33/43 | `08_duel_T6_synopsis` | `03c2d59` |
+| T7 | `Hero` | 1 | 5/5 ✅ | 38/43 | `09_duel_T7_hero` | `02bbc69` |
+| T8 | `AgentMessage` | 1 | 5/5 ✅ | **43/43** | `10_duel_T8_agentmessage_verde` | `35d9d5a` |
+
+Decisiones que hicieron pasar las pruebas a la primera (leídas antes en el verificador):
+
+- **T1 `Header`:** `<header>` (rol `banner`), `<h1>{name}</h1>` y
+  `<nav aria-label="Principal">` con `<ul>`/`<li>`/`<a href>`; `key={link.href}`.
+- **T2 `Footer`:** `className` (no `class`), `<footer>` (rol `contentinfo`) y los enlaces
+  `` `tel:${phone}` `` y `` `mailto:${email}` `` construidos desde el prop.
+- **T3 `MovieCard`:** `<article>` e `<img alt={movie.title}>`; sin `alt` la imagen no tiene
+  nombre accesible.
+- **T4 `Showtimes`:** se compara `times.length === 0` de forma explícita. Con
+  `times.length && <ul>` React dibujaría un `0` suelto cuando la lista está vacía.
+- **T5 `MovieList`:** `key={movie.id}`, un identificador estable de cada película, no el índice.
+- **T6 `Synopsis`** y **T8 `AgentMessage`:** el texto va como `{text}`, que React escapa: las
+  etiquetas se ven literalmente y no se ejecutan. Nunca `dangerouslySetInnerHTML`.
+- **T7 `Hero`:** el prop se llama `movie`, igual que lo pasa `App.jsx`.
+
+**Resultado final:** `Test Files 8 passed (8)`, `Tests 43 passed (43)`
+(`Evidencias_extra/10_duel_T8_agentmessage_verde.txt` y `.png`).
+
+**Cartelera completa:** `Evidencias_extra/11_cartelera_team.png`, tomada con `capture.mjs`. La
+sinopsis hostil y el mensaje del agente se ven como texto literal (`<img src=x onerror=…>`), la
+película «Ruta 91» muestra «Sin funciones hoy» y la consola del navegador
+(`11_cartelera_team.txt`) no tiene errores ni avisos de React; `window.__xss` quedó
+`undefined`.
+
+### Paso 7 — Pedir los componentes a una IA (omitido)
+
+Se omite: en este laboratorio los componentes de `src/duel/team/` ya los escribió Claude Code
+(una IA) en los pasos 5 y 6, siempre comprobados contra el verificador. La comparación con otra
+IA se hace en la Parte 3 con las respuestas fijas de `src/duel/ai/`.
 
 ## 4. Parte 3 — El duelo con la IA (`npm run duel:ai`)
 
