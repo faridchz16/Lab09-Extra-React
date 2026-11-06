@@ -1,5 +1,5 @@
 export default function Showtimes({ times }) {
-  if (!times) {
+  if (!times || times.length === 0) {
     return <p>Sin funciones hoy</p>;
   }
 
