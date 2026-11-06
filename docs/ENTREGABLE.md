@@ -258,7 +258,183 @@ falta un verificador automático.
 
 ## 5. Parte 4 — Arreglo de la copia de la IA (`npm run duel:fixed`)
 
-_Por cada arreglo: qué hacía el código, por qué React lo trata así y qué hace ahora._
+### Paso 10 — Copia de la IA en rojo
+
+`npm run fixed:init` copió `src/duel/ai/` a `src/duel/fixed/` (las originales no se tocan).
+`npm run duel:fixed` dio el mismo rojo que la IA (`13_duel_fixed_inicial.txt` / `.png`):
+
+```text
+ Test Files  6 failed | 2 passed (8)
+      Tests  14 failed | 29 passed (43)
+```
+
+### Paso 11 — El subagente `react-fixer` arregla un fallo cada vez
+
+Se le pidió al subagente `react-fixer` **un único fallo por ronda**: cambio mínimo y
+`npm run duel:fixed`. Después de cada ronda se volvió a ejecutar `duel:fixed` para guardar la
+evidencia y se hizo un commit. Se empezó por el ruidoso (T7) y se terminó por el de seguridad
+(T6).
+
+| # | Tarea | Cambio | Pruebas en rojo después | Evidencia | Commit |
+|---|---|---|---|---|---|
+| — | (inicio) | — | **14** | `13_duel_fixed_inicial` | `4fab6c9` |
+| 1 | T7 `Hero` | `{ film }` → `{ movie }` | **9** | `14_duel_fixed_T7_hero` | `be2d997` |
+| 2 | T2 `Footer` | `class` → `className` | **8** | `15_duel_fixed_T2_footer` | `c2660cf` |
+| 3 | T3 `MovieCard` | `<img>` + `alt={movie.title}` | **7** | `16_duel_fixed_T3_moviecard` | `37c8302` |
+| 4 | T4 `Showtimes` | `if (!times)` → `if (!times \|\| times.length === 0)` | **5** | `17_duel_fixed_T4_showtimes` | `6a718b4` |
+| 5 | T5 `MovieList` | `key={index}` → `key={movie.id}` | **3** | `18_duel_fixed_T5_movielist` | `51dafa2` |
+| 6 | T6 `Synopsis` | `dangerouslySetInnerHTML` → `{text}` | **0** ✅ | `19_duel_fixed_T6_synopsis_verde` | `4b55605` |
+
+**Arreglo 1 — T7 `Hero` (ruidoso)**
+
+```diff
+-export default function Hero({ film }) {
++export default function Hero({ movie }) {
+-      <h2>{film.title}</h2>
+-      <a href={`#horarios-${film.id}`}>Ver horarios</a>
++      <h2>{movie.title}</h2>
++      <a href={`#horarios-${movie.id}`}>Ver horarios</a>
+```
+
+- **Qué hacía el código:** desestructuraba un prop `film`, pero `App` y las pruebas pasan
+  `movie`. `film` valía `undefined` y `film.title` lanzaba
+  `TypeError: Cannot read properties of undefined (reading 'title')`.
+- **Por qué React lo trata así:** React mete todos los atributos JSX en un objeto `props` y no
+  comprueba sus nombres. Un nombre equivocado no da aviso: el valor es simplemente `undefined`.
+  El error es de JavaScript y salta durante el render, así que React desmonta el árbol y la
+  página entera queda en blanco. Por eso es **ruidoso** y caen las 5 pruebas.
+- **Qué hace ahora:** recibe `movie`, como dice el contrato, y dibuja la región «Destacada», el
+  `<h2>` y el enlace a `#horarios-<id>`.
+
+**Arreglo 2 — T2 `Footer` (avisa)**
+
+```diff
+-    <footer class="footer">
++    <footer className="footer">
+```
+
+- **Qué hacía el código:** usaba el atributo HTML `class`. La página se veía bien.
+- **Por qué React lo trata así:** en JSX los atributos siguen los nombres de las propiedades DOM
+  de JavaScript (`className`, porque `class` es palabra reservada). React no lanza error: en
+  desarrollo imprime ``Invalid DOM property `class`. Did you mean `className`?`` en
+  `console.error`. Es un fallo que **avisa**, y solo lo detecta la prueba que lee la consola con
+  `watchConsole`.
+- **Qué hace ahora:** usa `className`. El DOM resultante es el mismo y la consola queda limpia.
+
+**Arreglo 3 — T3 `MovieCard` (silencioso)**
+
+```diff
+-      <img src={movie.image} />
++      <img src={movie.image} alt={movie.title} />
+```
+
+- **Qué hacía el código:** el póster no tenía `alt`, así que la imagen no tenía nombre
+  accesible.
+- **Por qué React lo trata así:** a React no le importa que falte `alt`: no hay error ni aviso.
+  Es un fallo de accesibilidad (un lector de pantalla no sabe qué película es) que solo detecta
+  `getByAltText` / `getByRole("img", { name })`. Por eso es **silencioso**.
+- **Qué hace ahora:** `alt={movie.title}`, y la prueba encuentra las 8 imágenes por su título.
+
+**Arreglo 4 — T4 `Showtimes` (silencioso)**
+
+```diff
+-  if (!times) {
++  if (!times || times.length === 0) {
+     return <p>Sin funciones hoy</p>;
+```
+
+- **Qué hacía el código:** `!times` solo atrapa `null`/`undefined`, y un array vacío `[]` es
+  *truthy*. Después, `{times.length && <ul>…}` con longitud 0 devolvía `0`, y la página
+  mostraba un «0» suelto en lugar de «Sin funciones hoy».
+- **Por qué React lo trata así:** React no dibuja `false`, `null`, `undefined` ni `true`, pero
+  **sí dibuja los números**, incluido `0`. No hay error ni aviso: es **silencioso**.
+- **Qué hace ahora:** trata la lista vacía de forma explícita y devuelve el mensaje.
+  `react-fixer` señaló que `{times.length && …}` sigue en el archivo. Ya es inofensivo (solo se
+  llega ahí con `length >= 1`), pero es un patrón frágil. Lo correcto es `times.length > 0 && …`,
+  como en `team/`. Se dejó así para que el cambio fuera mínimo.
+
+**Arreglo 5 — T5 `MovieList` (silencioso)**
+
+```diff
+-      {movies.map((movie, index) => (
+-        <li key={index}>
++      {movies.map((movie) => (
++        <li key={movie.id}>
+```
+
+- **Qué hacía el código:** la `key` era la posición en el array, no la película.
+- **Por qué React lo trata así:** con una `key`, aunque sea el índice, React no avisa. Al
+  reordenar, React empareja los elementos por `key`: el `<li key={0}>` sigue existiendo, así que
+  lo reutiliza y solo le cambia el contenido por el de otra película. Es **silencioso** (ver el
+  paso 12).
+- **Qué hace ahora:** `key={movie.id}`, estable y única. Al reordenar o quitar, React **mueve**
+  los nodos existentes y solo elimina el de la película que desaparece.
+
+**Arreglo 6 — T6 `Synopsis` (silencioso, XSS)**
+
+```diff
+-  const html = text.replace(/\n/g, "<br />");
+-  return <p className="synopsis" dangerouslySetInnerHTML={{ __html: html }} />;
++  // Rendered as a text child: React escapes it. Line breaks come from CSS (white-space: pre-line).
++  return <p className="synopsis">{text}</p>;
+```
+
+- **Qué hacía el código:** para convertir los `\n` en `<br />` metía **todo el texto** como
+  HTML. Las etiquetas de la sinopsis hostil se convertían en elementos reales y el `onerror` del
+  `<img>` ejecutaba `window.__xss = 1`.
+- **Por qué React lo trata así:** un hijo `{text}` siempre se escapa y se inserta como nodo de
+  texto. `dangerouslySetInnerHTML` es la salida explícita que desactiva esa protección. React
+  confía en quien la usa, así que no avisa: es **silencioso**, y con texto normal funciona
+  perfectamente.
+- **Qué hace ahora:** el texto va como hijo, las etiquetas se ven literalmente y no se crea ni
+  se ejecuta nada. **Saltos de línea:** ya no se convierten en `<br />`. Se encarga el CSS:
+  `src/index.css:17` tiene `.synopsis, .agent-message { white-space: pre-line; }`, que muestra
+  los `\n` como saltos de línea. El formato lo da el CSS y el dato sigue siendo texto.
+
+**Resultado final** (`19_duel_fixed_T6_synopsis_verde.txt` / `.png`):
+
+```text
+ Test Files  8 passed (8)
+      Tests  43 passed (43)
+```
+
+### Paso 12 — Las dos pruebas de T5 que reordenan con `rerender`
+
+```jsx
+const { rerender } = render(<MovieList movies={movies} />);
+const before = movies.map(itemOf);                       // the <li> of each movie
+rerender(<MovieList movies={[...movies].reverse()} />);  // or movies.slice(1)
+movies.forEach((movie, i) => expect(itemOf(movie)).toBe(before[i]));
+```
+
+**Qué comprueban: la identidad de los nodos.** `itemOf(movie)` busca el `<li>` que contiene el
+`<h3>` de esa película. Antes de `rerender` se guardan las referencias a los 8 `<li>` reales del
+DOM. Después de invertir la lista (o de quitar la primera película) se exige con `toBe`
+(igualdad `Object.is`, es decir, **el mismo objeto**, no uno parecido) que cada película siga
+dentro de **su mismo nodo**. Es lo que debe pasar cuando React reconcilia por `key`: con
+`key={movie.id}`, React ve que la key 8 ahora va primero y **mueve** ese `<li>`, sin crear otro
+ni reescribir su contenido.
+
+**Por qué `key={index}` no avisa.** El aviso de React es «Each child in a list should have a
+unique "key" prop», y solo salta si **falta** la key o si hay keys **repetidas**. Los índices
+0…7 están presentes y son únicos, así que React queda satisfecho: no sabe que el índice no
+identifica a la película. Además, el primer render es idéntico y se ve bien. Por eso pasan la
+prueba de avisos y la de orden, y solo fallan las de `rerender`. Con `key={index}`, al invertir,
+el `<li key={0}>` que tenía «La Última Función» se queda en su sitio y React solo le cambia el
+texto, la imagen y la valoración por los de «Medianoche en Lima». Es justo el diff que mostró
+`duel:ai`.
+
+**Cómo se rompería con campos que rellena el usuario.** Hoy `MovieCard` no tiene estado, así
+que el error es invisible: reescribir el contenido da el mismo aspecto. Pero el DOM (y el
+estado de React, desde la semana 10) va pegado al nodo, no a la película. Si cada tarjeta
+tuviera un `<input>` no controlado (por ejemplo, «número de entradas» o un comentario) o un
+`useState`, y el usuario escribiera «3 entradas» en «La Última Función» antes de invertir el
+orden, el `<input>` con ese valor seguiría en el `<li key={0}>`. Tras el `rerender` ese `<li>`
+muestra «Medianoche en Lima», así que **las 3 entradas aparecerían en otra película**. Al quitar
+la primera película pasa lo mismo: desaparece el último nodo (key 7) y cada valor escrito se
+corre una película hacia arriba. Lo mismo ocurre con el foco, la selección de texto, las
+animaciones o un `<video>` en reproducción. Con `key={movie.id}` cada valor se queda con su
+película.
 
 ## 6. Parte 5 — Datos de terceros (XSS)
 
