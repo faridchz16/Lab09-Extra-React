@@ -724,6 +724,8 @@ Todas están en `Evidencias_extra/`. Cada salida de pruebas tiene un `.txt` (la 
 | 31 | `31_agente_texto_xss_undefined.png` | Tarjetas sin las clases CSS (sin estilos), mensaje del agente como texto y `window.__xss` = `undefined` | Alumno |
 | 32 | `32_duel_final_alumno_T1_T4` | `duel` final con T1–T4 del alumno: 43/43 | Claude Code |
 | 33 | `33_duel_fixed_final` | `duel:fixed` final: 43/43 | Claude Code |
+| 34 | `34_npm_test.png` | `npm test`: todas las pruebas del proyecto, las 4 de los datos (`movies.test.js`) y las 43 del duelo con `team/`, en verde: 9/9 archivos y 47/47 pruebas | Alumno |
+| 35 | `35_npm_run_build.png` | `npm run build`: Vite 7.3.7 compila la app para producción sin errores (39 módulos, `dist/` generado en 632 ms) | Alumno |
 
 ## 9. Conclusiones
 

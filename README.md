@@ -133,7 +133,7 @@ Las reglas del proyecto están en `CLAUDE.md`. `.claude/settings.json` **bloquea
 - **test-reviewer:** revisor de **solo lectura** (`Read`, `Grep`, `Glob`, `Bash`). Ejecuta `duel`, `duel:ai` o `duel:fixed`, resume por tarea T1–T8 y clasifica cada fallo como ruidoso / avisa / silencioso. Se usó en el estado inicial (43 en rojo, todos ruidosos) y en el duelo con la IA (6 tareas: 1 ruidosa, 1 que avisa y 4 silenciosas).
 - **react-fixer:** solo puede editar `src/duel/fixed/`. Arregla **un fallo por ronda** con el cambio mínimo, ejecuta `duel:fixed` y explica qué hacía el código, por qué React lo trata así y qué hace ahora. No hace commits: cada arreglo se confirmó por separado. Propuso dos mejoras opcionales que se rechazaron para que cada cambio fuera mínimo (ver el paso 15 del entregable).
 
-**Reparto del trabajo:** el **alumno** escribió sin IA **T1 a T4** (`Header`, `Footer`, `MovieCard` y `Showtimes`), dirigió los pasos, revisó los resultados y tomó las capturas del navegador y de su terminal (01, 20–23 y 27–31). **Claude Code** escribió **T5 a T8** (`MovieList`, `Synopsis`, `Hero` y `AgentMessage`), todo `src/duel/fixed/`, los scripts de evidencias y la documentación.
+**Reparto del trabajo:** el **alumno** escribió sin IA **T1 a T4** (`Header`, `Footer`, `MovieCard` y `Showtimes`), dirigió los pasos, revisó los resultados y tomó las capturas del navegador y de su terminal (01, 20–23, 27–31, 34 y 35). **Claude Code** escribió **T5 a T8** (`MovieList`, `Synopsis`, `Hero` y `AgentMessage`), todo `src/duel/fixed/`, los scripts de evidencias y la documentación.
 
 ## 📦 Estructura de Commits del Repositorio
 
@@ -172,7 +172,7 @@ Historial en commits atómicos documentados en español (un commit por component
 
 ## 📸 Capturas y Evidencias
 
-Todas las evidencias están en `Evidencias_extra/`. Cada ejecución de pruebas guarda la salida real (`.txt`, con `EXIT=<código>` al final) y su imagen de terminal (`.png`, generada con `scripts/terminal.mjs`). Las capturas 01, 20–23 y 27–31 las tomó el alumno (Chrome y su terminal); la 11, Playwright. Las evidencias 03–06 corresponden a la primera versión de T1–T4, la de Claude Code, que después se sustituyó por la del alumno (27–30).
+Todas las evidencias están en `Evidencias_extra/`. Cada ejecución de pruebas guarda la salida real (`.txt`, con `EXIT=<código>` al final) y su imagen de terminal (`.png`, generada con `scripts/terminal.mjs`). Las capturas 01, 20–23, 27–31, 34 y 35 las tomó el alumno (Chrome y su terminal); la 11, Playwright. Las evidencias 03–06 corresponden a la primera versión de T1–T4, la de Claude Code, que después se sustituyó por la del alumno (27–30).
 
 1. **Estado inicial – página en blanco:**
    `npm run dev` con los componentes sin escribir: `Uncaught Error: TODO(team): write Header in src/duel/team/Header.jsx`.
@@ -282,6 +282,14 @@ Todas las evidencias están en `Evidencias_extra/`. Cada ejecución de pruebas g
 
 33. **Verificación final `npm run duel:fixed` – 43/43:** [Salida .txt](Evidencias_extra/33_duel_fixed_final.txt)
     ![Duel fixed final](Evidencias_extra/33_duel_fixed_final.png)
+
+34. **`npm test` – todo el proyecto en verde:**
+    Las 4 pruebas de los datos (`movies.test.js`) y las 43 del duelo con `team/` pasan: `Test Files 9 passed (9)`, `Tests 47 passed (47)`.
+    ![npm test](Evidencias_extra/34_npm_test.png)
+
+35. **`npm run build` – compilación de producción:**
+    Vite 7.3.7 transforma 39 módulos y genera `dist/` (`index.html`, CSS y JS) sin errores en 632 ms.
+    ![npm run build](Evidencias_extra/35_npm_run_build.png)
 
 ---
 
