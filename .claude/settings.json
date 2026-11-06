@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(./src/duel/tests/**)",
+      "Write(./src/duel/tests/**)",
+      "Edit(./src/duel/ai/**)",
+      "Write(./src/duel/ai/**)",
+      "Edit(./src/data/movies.js)",
+      "Write(./src/data/movies.js)",
+      "Edit(./src/duel/support.js)",
+      "Write(./src/duel/support.js)"
+    ]
+  }
+}
