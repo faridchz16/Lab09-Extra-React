@@ -1,0 +1,22 @@
+
+> dae-s09-react-ia@0.1.0 duel
+> vitest run --mode team src/duel
+
+
+ RUN  v3.2.7 E:/ClaudeCode/Lab09-Extra-React
+
+ ✓ src/duel/tests/T6-synopsis.test.jsx (5 tests) 27ms
+ ✓ src/duel/tests/T8-agentmessage.test.jsx (5 tests) 34ms
+ ✓ src/duel/tests/T4-showtimes.test.jsx (6 tests) 79ms
+ ✓ src/duel/tests/T2-footer.test.jsx (6 tests) 83ms
+ ✓ src/duel/tests/T7-hero.test.jsx (5 tests) 86ms
+ ✓ src/duel/tests/T1-header.test.jsx (5 tests) 106ms
+ ✓ src/duel/tests/T3-moviecard.test.jsx (6 tests) 107ms
+ ✓ src/duel/tests/T5-movielist.test.jsx (5 tests) 220ms
+
+ Test Files  8 passed (8)
+      Tests  43 passed (43)
+   Start at  21:05:05
+   Duration  1.66s (transform 183ms, setup 1.23s, collect 1.49s, tests 743ms, environment 5.74s, prepare 1.16s)
+
+EXIT=0

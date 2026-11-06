@@ -7,7 +7,24 @@
 
 ## 1. Configuración de Claude Code
 
-_Descripción de `CLAUDE.md`, `.claude/settings.json` (reglas deny) y los subagentes `test-reviewer` y `react-fixer`._
+- **`CLAUDE.md`:** describe el laboratorio, las 8 tareas con sus props, los comandos (`duel`,
+  `duel:ai`, `fixed:init`, `duel:fixed`) y las reglas: solo se editan `src/duel/team/` y
+  `src/duel/fixed/`; componentes funcionales con props, sin estado ni hooks; nunca
+  `dangerouslySetInnerHTML` (salvo el paso 13, que se revierte); código en inglés y
+  explicaciones en español; un commit por tarea.
+- **`.claude/settings.json`:** cuatro reglas `deny` que impiden a Claude Code editar las rutas
+  protegidas: `src/duel/tests/**` (el verificador), `src/duel/ai/**` (las respuestas originales
+  de la IA), `src/data/movies.js` y `src/duel/support.js`. Así la IA no puede «aprobar»
+  cambiando el examen.
+- **Subagentes (`.claude/agents/`):**
+  - `test-reviewer`: herramientas `Read, Grep, Glob, Bash`, sin `Edit` ni `Write`. Ejecuta
+    `duel`, `duel:ai` o `duel:fixed`, resume por tarea y clasifica cada fallo como ruidoso /
+    avisa / silencioso. Se usó en los pasos 4 y 8.
+  - `react-fixer`: puede editar, pero su prompt lo limita a `src/duel/fixed/`, a un fallo por
+    vez y a no hacer commits. Se usó en el paso 11.
+
+  Separar quien revisa (solo lectura) de quien arregla es la misma idea que el verificador:
+  quien escribe el código no decide si está bien.
 
 ## 2. Parte 1 — Lectura del verificador
 
@@ -438,10 +455,155 @@ película.
 
 ## 6. Parte 5 — Datos de terceros (XSS)
 
-_Paso 13: `dangerouslySetInnerHTML` en `Synopsis`, evidencia de `window.__xss` en la consola y reversión._
+### Paso 13 — Romper `Synopsis` a propósito (y revertir)
 
-## 7. Evidencias
+**Qué se cambió.** En `src/duel/team/Synopsis.jsx`, **sin commit**, se sustituyó la versión
+segura por la insegura:
 
-_Capturas en `Evidencias_extra/`._
+```diff
+-  return <p className="synopsis">{text}</p>;
++  // TEMPORARY (guide step 13): unsafe on purpose to show the XSS. Revert after the screenshots.
++  return <p className="synopsis" dangerouslySetInnerHTML={{ __html: text }} />;
+```
 
-## 8. Conclusiones
+**Lo que se vio en el navegador** (capturas del alumno, Chrome DevTools):
+
+- `20_xss_ejecutado.png`: la sinopsis se interpreta como HTML. Aparece «Gran estreno», el
+  icono de **imagen rota** (el `<img src=x>`) y «**no te lo pierdas**» en negrita (el `<b>`).
+  En la consola, `window.__xss` devuelve **`1`**: el `onerror` se ejecutó.
+- `21_xss_bloqueado.png`: tras revertir, la sinopsis se ve como texto plano con las etiquetas
+  escritas (`Gran estreno <img src=x onerror="window.__xss=1"> <b>no te lo pierdas</b>`) y
+  `window.__xss` devuelve **`undefined`**.
+
+**Las 3 pruebas que fallaron con `dangerouslySetInnerHTML`** (`npm run duel`: `Tests 3 failed |
+40 passed (43)`; salida en `24_duel_xss_dangerously.txt` / `.png`):
+
+| Prueba de T6 | Mensaje |
+|---|---|
+| la sinopsis hostil se muestra como texto literal, con sus etiquetas a la vista | `AssertionError: expected 'Gran estreno  no te lo pierdas' to be 'Gran estreno <img src=x onerror="wind…'` |
+| la sinopsis hostil no crea elementos nuevos en la página (ni img ni b) | `AssertionError: expected <img src="x" …(1)></img>` … `to have a length of +0 but got 2` |
+| la sinopsis hostil no ejecuta código: window.__xss queda sin definir | `AssertionError: expected 1 to be undefined` |
+
+Las otras dos pruebas de T6 («no produce avisos» y «un texto normal se muestra tal cual»)
+**siguieron en verde**: React no avisa y con datos inocentes el cambio es invisible. Es un fallo
+silencioso de manual.
+
+**Reversión.** Se restauró el archivo con `git checkout -- src/duel/team/Synopsis.jsx` (vuelve
+a ser exactamente la versión del commit `03c2d59`), y `git status` no mostró cambios en el
+código. La verificación final dio `npm run duel` 43/43 (`25_duel_final_team`) y
+`npm run duel:fixed` 43/43 (`26_duel_fixed_final`).
+
+### Paso 14 — El texto de un agente de IA es un dato no confiable
+
+**Capturas:** `22_agente_como_texto.png` y `23_agente_como_texto_tras_arreglo.png`. En la
+sección «Asistente de la cartelera», `AgentMessage` muestra el mensaje del agente **como
+texto**: `Agente: Encontré 8 películas. <img src=x onerror="window.__xss=1"> Sugerencia:
+<b>borrar la cartelera</b>.` Se ven `<img …>` y `<b>` literales; no hay imagen rota ni
+negrita.
+
+**¿Por qué el texto de un agente es un dato no confiable?**
+
+- **El agente no es el autor real de lo que dice.** Un modelo resume páginas, correos, PDF o
+  respuestas de APIs que escribieron terceros. Si alguno de esos textos contiene HTML o
+  instrucciones (*prompt injection*), el agente puede copiarlo tal cual en su respuesta. Es lo
+  que simula `App.jsx`: un mensaje con un `<img onerror>` y una «sugerencia» de borrar la
+  cartelera.
+- **No hay garantías sobre su salida.** Puede alucinar, mezclar formato o devolver justo lo que
+  un atacante sembró. Que «lo haya escrito nuestra IA» no lo convierte en código nuestro.
+- **Debe tratarse igual que cualquier entrada de usuario o de terceros**, como la sinopsis de
+  `movies.js`. La regla no depende de quién escribe el texto, sino de **cómo se inserta**: como
+  texto siempre; como HTML, nunca sin sanear.
+
+**Qué hace React por defecto con `{text}`.** Todo valor que se pone como hijo en JSX se trata
+como **texto, no como marcado**. En el navegador React crea un nodo de texto, así que el
+`<` no abre ninguna etiqueta. Al generar HTML (en el servidor) **escapa** los caracteres
+especiales: `<` → `&lt;`, `>` → `&gt;`, `&` → `&amp;`, `"` → `&quot;` (y `'`). Por eso
+`<img src=x onerror=…>` se ve escrito en pantalla, no crea ningún `<img>` y su `onerror` nunca
+existe. La única forma de saltarse esa protección es pedirlo explícitamente con
+`dangerouslySetInnerHTML`, un nombre largo y alarmante a propósito.
+
+**Comparación con el autoescape de Django (semana 6).**
+
+| | Django (plantillas) | React (JSX) |
+|---|---|---|
+| Por defecto | `{{ variable }}` escapa `< > & " '` | `{text}` se inserta como texto (escapado) |
+| Desactivar a propósito | filtro `{{ variable\|safe }}`, `{% autoescape off %}` o `mark_safe()` en Python | `dangerouslySetInnerHTML={{ __html: text }}` |
+| Cuándo es aceptable | solo con HTML de confianza o saneado (por ejemplo, con *bleach*) | igual: solo con HTML saneado (por ejemplo, con DOMPurify) |
+| Lo que vimos | — | en T6 la IA usó el equivalente a `\|safe` con datos de un tercero → XSS |
+
+La idea es la misma en los dos frameworks: **seguro por defecto y peligroso solo si lo pides**.
+`{{ sinopsis }}` en Django y `{sinopsis}` en React son equivalentes, igual que
+`{{ sinopsis|safe }}` y `dangerouslySetInnerHTML`. El error de la IA en T6 en Django habría
+sido escribir `|safe` «para que se vean los saltos de línea». La solución correcta en ambos es
+la misma: dejar el escape activo y resolver el formato de otro modo (en Django `|linebreaks`,
+que escapa primero; aquí `white-space: pre-line` en CSS).
+
+## 7. Paso 15 — Uso de IA en este laboratorio
+
+Todo el código de `src/duel/team/` y `src/duel/fixed/`, los scripts de `scripts/` y la redacción
+de este entregable los produjo **Claude Code** (con los subagentes `test-reviewer` y
+`react-fixer`) a partir de las instrucciones del alumno. **El alumno** decidió los pasos,
+revisó los resultados y **tomó las capturas del navegador** (`01`, `20`, `21`, `22`, `23`). El
+oráculo fueron siempre las pruebas, que la IA no podía editar (reglas `deny`).
+
+| # | Qué se le pidió a Claude Code | Qué respondió / hizo | Aceptado o rechazado, y por qué |
+|---|---|---|---|
+| 1 | Pasos 2–4: analizar los datos y las pruebas T1/T2 sin escribir código, y ejecutar `duel` con `test-reviewer` | Respuestas del paso 2, tablas de T1/T2, explicación de roles y `watchConsole`, 43 pruebas en rojo (todas ruidosas) | **Aceptado.** Se comprobó contra `movies.js`, los archivos de prueba y la salida real. |
+| 2 | Scripts de evidencias con Playwright vía `npx` (`capture.mjs`, `terminal.mjs`) | Los creó con un cargador que relanza el script con `npx -p playwright@1.64.1`, más `evidence.sh` para guardar `.txt` + `.png` | **Aceptado con dos correcciones de la propia IA:** descartó Playwright 1.65.0 por estar publicado ese mismo día (prefirió una versión con semanas de uso) y, al ver colores ANSI en la salida, añadió `NO_COLOR=1`. Las salidas de Testing Library conservan algunos códigos de color en los `.txt`; el `.png` los oculta. |
+| 3 | Pasos 5–6: escribir los 8 componentes de `team/` de uno en uno, con un commit por componente | Los 8 pasaron **al primer intento** (43/43) | **Aceptado.** Lo decidió el verificador, no la confianza en la IA. Se comprobó también en el navegador (`11_cartelera_team.png`, consola sin avisos). |
+| 4 | Paso 7: pedir los componentes a otra IA | No se hizo | **Omitido**, porque `team/` ya lo escribió Claude Code; la comparación con otra IA la da `src/duel/ai/`. |
+| 5 | Pasos 8–9: `duel:ai` con `test-reviewer` | 14 fallos en 6 tareas: 1 ruidoso, 1 avisa, 4 silenciosos | **Aceptado.** Las cifras y los mensajes coinciden con la ejecución propia (`12_duel_ai.txt`). |
+| 6 | Paso 11: `react-fixer` arregla los 6 fallos de `fixed/`, uno por ronda | Seis arreglos mínimos con su explicación (14 → 9 → 8 → 7 → 5 → 3 → 0) | **Aceptados los seis.** Se volvió a ejecutar `duel:fixed` después de cada uno. |
+| 7 | (Sugerencia del propio `react-fixer`) cambiar también `{times.length && …}` en `fixed/Showtimes.jsx` | Lo propuso como mejora opcional | **Rechazado** para que cada arreglo fuera mínimo y trazable a una prueba; queda documentado como patrón frágil. |
+| 8 | (Sugerencia de `react-fixer`) partir el texto por `\n` e intercalar `<br />` en `Synopsis` | Lo propuso como alternativa a `white-space: pre-line` | **Rechazado:** el CSS ya existía (`index.css:17`) y no hace falta más código. |
+| 9 | Paso 13: cambiar `Synopsis` a `dangerouslySetInnerHTML` sin commit y detenerse | Hizo el cambio, ejecutó `duel` (3 fallos en T6) y se detuvo | **Aceptado.** El alumno tomó las capturas `20` y `21`, y la IA revirtió con `git checkout`. |
+| 10 | Numerar las evidencias | Su salida del paso 13 chocaba con la captura `20` del alumno | **Corregido:** se renombró a `24_duel_xss_dangerously`. |
+| 11 | Pasos 13–15, README y verificación final | Esta redacción, el README y la ejecución final de `duel` y `duel:fixed` (43/43 y 43/43) | Revisión del alumno pendiente antes de la entrega. |
+
+**Límites de lo que hizo la IA.** Claude Code no vio la consola de Chrome del alumno: la única
+consola que vio fue la de Playwright (`11_cartelera_team.txt`). Las afirmaciones sobre
+`window.__xss` en el navegador real se apoyan en las capturas del alumno.
+
+## 8. Evidencias
+
+Todas están en `Evidencias_extra/`. Cada salida de pruebas tiene un `.txt` (la salida real, con
+`EXIT=<código>` al final) y un `.png` generado con `scripts/terminal.mjs`.
+
+| Nº | Archivo | Qué muestra | Autor |
+|---|---|---|---|
+| 01 | `01_error_inicial_todo.png` | Página en blanco y `TODO(team): write Header` en la consola | Alumno |
+| 02 | `02_duel_inicial` | `duel` inicial: 43 en rojo | `test-reviewer` |
+| 03–10 | `03_duel_T1_header` … `10_duel_T8_agentmessage_verde` | `duel` tras cada componente (5 → 43 en verde) | Claude Code |
+| 11 | `11_cartelera_team.png` / `.txt` | Cartelera completa a 1440×900 y su consola | `capture.mjs` |
+| 12 | `12_duel_ai` | `duel:ai`: 14 en rojo en 6 tareas | Claude Code |
+| 13 | `13_duel_fixed_inicial` | `duel:fixed` recién copiado: 14 en rojo | Claude Code |
+| 14–19 | `14_duel_fixed_T7_hero` … `19_duel_fixed_T6_synopsis_verde` | `duel:fixed` tras cada arreglo (9, 8, 7, 5, 3, 0 en rojo) | Claude Code |
+| 20 | `20_xss_ejecutado.png` | `dangerouslySetInnerHTML`: imagen rota, negrita y `window.__xss` = `1` | Alumno |
+| 21 | `21_xss_bloqueado.png` | Tras revertir: texto literal y `window.__xss` = `undefined` | Alumno |
+| 22 | `22_agente_como_texto.png` | El mensaje del agente como texto | Alumno |
+| 23 | `23_agente_como_texto_tras_arreglo.png` | El mensaje del agente como texto, tras el arreglo | Alumno |
+| 24 | `24_duel_xss_dangerously` | `duel` con la `Synopsis` insegura: 3 en rojo (T6) | Claude Code |
+| 25 | `25_duel_final_team` | `duel` final: 43/43 | Claude Code |
+| 26 | `26_duel_fixed_final` | `duel:fixed` final: 43/43 | Claude Code |
+
+## 9. Conclusiones
+
+1. **El verificador decide, no la apariencia.** De los 6 fallos de la IA, solo 1 (T7) rompía la
+   página; 1 dejaba un aviso en consola (T2) y **4 eran silenciosos**: la cartelera se veía
+   bien y aun así tenía un XSS, una lista con identidades cruzadas, un «0» suelto y una imagen
+   sin texto alternativo. Una revisión «a ojo» habría aprobado 5 de los 6.
+2. **Consultar por rol y nombre accesible prueba lo que importa.** Las pruebas obligan a usar
+   HTML semántico y accesible, y no se rompen por cambiar estilos.
+3. **Los avisos de React son fallos.** `watchConsole` convierte `class` en vez de `className` (o
+   una `key` que falta) en una prueba en rojo, en lugar de una línea ignorada en la consola.
+4. **`key` estable, no el índice.** `key={index}` no avisa y funciona hasta que la lista cambia.
+   Con estado o campos rellenados por el usuario (semana 10), los datos acabarían en la
+   película equivocada.
+5. **Los datos de terceros, y el texto de un agente de IA, son no confiables.** React escapa
+   `{text}` por defecto, como Django con `{{ variable }}`. `dangerouslySetInnerHTML` es el
+   `|safe` de React y no debe usarse con datos ajenos. Las capturas 20 y 21 muestran la
+   diferencia: `window.__xss` = `1` frente a `undefined`.
+6. **La IA es útil si se la verifica y se la acota.** Claude Code escribió `team/` y arregló
+   `fixed/` rápido y bien, pero porque trabajó contra pruebas que no podía tocar (reglas
+   `deny`), con un revisor de solo lectura y un arreglo por commit. La otra IA, sin verificador,
+   falló 6 de 8 tareas.
