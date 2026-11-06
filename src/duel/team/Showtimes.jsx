@@ -1,6 +1,16 @@
-// TODO(team) · Task 4
+// Task 4 · Today's showtimes for a movie.
 // Props: times (array of strings such as "19:30").
-// If times is empty: <p>Sin funciones hoy</p>. Otherwise a <ul> with one <li> per time.
 export default function Showtimes({ times }) {
-  throw new Error("TODO(team): write Showtimes in src/duel/team/Showtimes.jsx");
+  // Compare with 0 explicitly: `times.length && ...` would render a loose "0".
+  if (times.length === 0) {
+    return <p>Sin funciones hoy</p>;
+  }
+
+  return (
+    <ul className="showtimes">
+      {times.map((time) => (
+        <li key={time}>{time}</li>
+      ))}
+    </ul>
+  );
 }

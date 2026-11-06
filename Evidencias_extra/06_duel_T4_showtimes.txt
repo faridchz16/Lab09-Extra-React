@@ -1,0 +1,183 @@
+
+> dae-s09-react-ia@0.1.0 duel
+> vitest run --mode team src/duel
+
+
+ RUN  v3.2.7 E:/ClaudeCode/Lab09-Extra-React
+
+ ❯ src/duel/tests/T6-synopsis.test.jsx (5 tests | 5 failed) 25ms
+   × [team] T6 Synopsis > no produce avisos de React en la consola 17ms
+     → TODO(team): write Synopsis in src/duel/team/Synopsis.jsx
+   × [team] T6 Synopsis > un texto normal se muestra tal cual dentro de un párrafo 2ms
+     → TODO(team): write Synopsis in src/duel/team/Synopsis.jsx
+   × [team] T6 Synopsis > la sinopsis hostil se muestra como texto literal, con sus etiquetas a la vista 2ms
+     → TODO(team): write Synopsis in src/duel/team/Synopsis.jsx
+   × [team] T6 Synopsis > la sinopsis hostil no crea elementos nuevos en la página (ni img ni b) 1ms
+     → TODO(team): write Synopsis in src/duel/team/Synopsis.jsx
+   × [team] T6 Synopsis > la sinopsis hostil no ejecuta código: window.__xss queda sin definir 2ms
+     → TODO(team): write Synopsis in src/duel/team/Synopsis.jsx
+ ❯ src/duel/tests/T5-movielist.test.jsx (5 tests | 5 failed) 23ms
+   × [team] T5 MovieList > no produce avisos de React en la consola (cada elemento lleva su key) 16ms
+     → TODO(team): write MovieList in src/duel/team/MovieList.jsx
+   × [team] T5 MovieList > dibuja una lista con un elemento por película, en el mismo orden 1ms
+     → TODO(team): write MovieList in src/duel/team/MovieList.jsx
+   × [team] T5 MovieList > cada elemento contiene una tarjeta (un article) 1ms
+     → TODO(team): write MovieList in src/duel/team/MovieList.jsx
+   × [team] T5 MovieList > al invertir el orden, cada película conserva su propio nodo del DOM 1ms
+     → TODO(team): write MovieList in src/duel/team/MovieList.jsx
+   × [team] T5 MovieList > al quitar la primera película, las demás conservan su nodo del DOM 2ms
+     → TODO(team): write MovieList in src/duel/team/MovieList.jsx
+ ❯ src/duel/tests/T8-agentmessage.test.jsx (5 tests | 5 failed) 25ms
+   × [team] T8 AgentMessage > no produce avisos de React en la consola 17ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+   × [team] T8 AgentMessage > el autor va en negrita (strong) seguido de dos puntos 2ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+   × [team] T8 AgentMessage > el texto va en un span dentro del mismo párrafo 1ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+   × [team] T8 AgentMessage > el texto de un agente con etiquetas se muestra literal, nunca como HTML 2ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+   × [team] T8 AgentMessage > el texto de un agente no ejecuta código: window.__xss queda sin definir 2ms
+     → TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+ ❯ src/duel/tests/T7-hero.test.jsx (5 tests | 5 failed) 28ms
+   × [team] T7 Hero > con una película correcta se dibuja sin lanzar ningún error 19ms
+     → expected [Function] to not throw an error but 'Error: TODO(team): write Hero in src/…' was thrown
+   × [team] T7 Hero > no produce avisos de React en la consola 4ms
+     → TODO(team): write Hero in src/duel/team/Hero.jsx
+   × [team] T7 Hero > es una región llamada «Destacada» 1ms
+     → TODO(team): write Hero in src/duel/team/Hero.jsx
+   × [team] T7 Hero > el título de la película es un encabezado de nivel 2 1ms
+     → TODO(team): write Hero in src/duel/team/Hero.jsx
+   × [team] T7 Hero > el enlace «Ver horarios» apunta a #horarios- seguido del id de la película 1ms
+     → TODO(team): write Hero in src/duel/team/Hero.jsx
+ ✓ src/duel/tests/T4-showtimes.test.jsx (6 tests) 82ms
+ ✓ src/duel/tests/T2-footer.test.jsx (6 tests) 98ms
+ ✓ src/duel/tests/T1-header.test.jsx (5 tests) 110ms
+ ✓ src/duel/tests/T3-moviecard.test.jsx (6 tests) 116ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 20 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/duel/tests/T5-movielist.test.jsx > [team] T5 MovieList > no produce avisos de React en la consola (cada elemento lleva su key)
+ FAIL  src/duel/tests/T5-movielist.test.jsx > [team] T5 MovieList > dibuja una lista con un elemento por película, en el mismo orden
+ FAIL  src/duel/tests/T5-movielist.test.jsx > [team] T5 MovieList > cada elemento contiene una tarjeta (un article)
+ FAIL  src/duel/tests/T5-movielist.test.jsx > [team] T5 MovieList > al invertir el orden, cada película conserva su propio nodo del DOM
+ FAIL  src/duel/tests/T5-movielist.test.jsx > [team] T5 MovieList > al quitar la primera película, las demás conservan su nodo del DOM
+Error: TODO(team): write MovieList in src/duel/team/MovieList.jsx
+ ❯ MovieList src/duel/team/MovieList.jsx:6:9
+      4| // Every <li> needs a key that identifies the movie.
+      5| export default function MovieList({ movies }) {
+      6|   throw new Error("TODO(team): write MovieList in src/duel/team/MovieL…
+       |         ^
+      7| }
+      8| 
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:28571:20
+ ❯ renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:8030:22
+ ❯ updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10569:19
+ ❯ beginWork node_modules/react-dom/cjs/react-dom-client.development.js:12205:18
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:19176:22
+ ❯ workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:19004:41
+ ❯ renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:18985:11
+ ❯ performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:18094:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/20]⎯
+
+ FAIL  src/duel/tests/T6-synopsis.test.jsx > [team] T6 Synopsis > no produce avisos de React en la consola
+ FAIL  src/duel/tests/T6-synopsis.test.jsx > [team] T6 Synopsis > un texto normal se muestra tal cual dentro de un párrafo
+ FAIL  src/duel/tests/T6-synopsis.test.jsx > [team] T6 Synopsis > la sinopsis hostil se muestra como texto literal, con sus etiquetas a la vista
+ FAIL  src/duel/tests/T6-synopsis.test.jsx > [team] T6 Synopsis > la sinopsis hostil no crea elementos nuevos en la página (ni img ni b)
+ FAIL  src/duel/tests/T6-synopsis.test.jsx > [team] T6 Synopsis > la sinopsis hostil no ejecuta código: window.__xss queda sin definir
+Error: TODO(team): write Synopsis in src/duel/team/Synopsis.jsx
+ ❯ Synopsis src/duel/team/Synopsis.jsx:5:9
+      3| // Returns a <p> that shows the text exactly as it is, never as HTML.
+      4| export default function Synopsis({ text }) {
+      5|   throw new Error("TODO(team): write Synopsis in src/duel/team/Synopsi…
+       |         ^
+      6| }
+      7| 
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:28571:20
+ ❯ renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:8030:22
+ ❯ updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10569:19
+ ❯ beginWork node_modules/react-dom/cjs/react-dom-client.development.js:12205:18
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:19176:22
+ ❯ workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:19004:41
+ ❯ renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:18985:11
+ ❯ performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:18094:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/20]⎯
+
+ FAIL  src/duel/tests/T7-hero.test.jsx > [team] T7 Hero > con una película correcta se dibuja sin lanzar ningún error
+AssertionError: expected [Function] to not throw an error but 'Error: TODO(team): write Hero in src/…' was thrown
+
+- Expected: 
+undefined
+
++ Received: 
+"Error: TODO(team): write Hero in src/duel/team/Hero.jsx"
+
+ ❯ src/duel/tests/T7-hero.test.jsx:18:58
+     16| 
+     17|   test("con una película correcta se dibuja sin lanzar ningún error", …
+     18|     expect(() => render(<Hero movie={movies[0]} />)).not.toThrow();
+       |                                                          ^
+     19|   });
+     20| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/20]⎯
+
+ FAIL  src/duel/tests/T7-hero.test.jsx > [team] T7 Hero > no produce avisos de React en la consola
+ FAIL  src/duel/tests/T7-hero.test.jsx > [team] T7 Hero > es una región llamada «Destacada»
+ FAIL  src/duel/tests/T7-hero.test.jsx > [team] T7 Hero > el título de la película es un encabezado de nivel 2
+ FAIL  src/duel/tests/T7-hero.test.jsx > [team] T7 Hero > el enlace «Ver horarios» apunta a #horarios- seguido del id de la película
+Error: TODO(team): write Hero in src/duel/team/Hero.jsx
+ ❯ Hero src/duel/team/Hero.jsx:6:9
+      4| // link "Ver horarios" that points to #horarios-<id>.
+      5| export default function Hero({ movie }) {
+      6|   throw new Error("TODO(team): write Hero in src/duel/team/Hero.jsx");
+       |         ^
+      7| }
+      8| 
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:28571:20
+ ❯ renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:8030:22
+ ❯ updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10569:19
+ ❯ beginWork node_modules/react-dom/cjs/react-dom-client.development.js:12205:18
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:19176:22
+ ❯ workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:19004:41
+ ❯ renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:18985:11
+ ❯ performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:18094:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/20]⎯
+
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > no produce avisos de React en la consola
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > el autor va en negrita (strong) seguido de dos puntos
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > el texto va en un span dentro del mismo párrafo
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > el texto de un agente con etiquetas se muestra literal, nunca como HTML
+ FAIL  src/duel/tests/T8-agentmessage.test.jsx > [team] T8 AgentMessage > el texto de un agente no ejecuta código: window.__xss queda sin definir
+Error: TODO(team): write AgentMessage in src/duel/team/AgentMessage.jsx
+ ❯ AgentMessage src/duel/team/AgentMessage.jsx:6:9
+      4| // The agent's text is always shown as text, never as HTML.
+      5| export default function AgentMessage({ author, text }) {
+      6|   throw new Error("TODO(team): write AgentMessage in src/duel/team/Age…
+       |         ^
+      7| }
+      8| 
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-client.development.js:28571:20
+ ❯ renderWithHooks node_modules/react-dom/cjs/react-dom-client.development.js:8030:22
+ ❯ updateFunctionComponent node_modules/react-dom/cjs/react-dom-client.development.js:10569:19
+ ❯ beginWork node_modules/react-dom/cjs/react-dom-client.development.js:12205:18
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:1048:13
+ ❯ performUnitOfWork node_modules/react-dom/cjs/react-dom-client.development.js:19176:22
+ ❯ workLoopSync node_modules/react-dom/cjs/react-dom-client.development.js:19004:41
+ ❯ renderRootSync node_modules/react-dom/cjs/react-dom-client.development.js:18985:11
+ ❯ performWorkOnRoot node_modules/react-dom/cjs/react-dom-client.development.js:18094:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/20]⎯
+
+
+ Test Files  4 failed | 4 passed (8)
+      Tests  20 failed | 23 passed (43)
+   Start at  20:45:01
+   Duration  1.58s (transform 234ms, setup 1.20s, collect 1.52s, tests 507ms, environment 5.97s, prepare 1.10s)
+
+EXIT=1
