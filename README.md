@@ -15,16 +15,16 @@ El laboratorio gira en torno a cuatro ideas:
 
 Componentes funcionales con props, sin estado ni hooks (eso es la semana 10):
 
-| Tarea | Componente | Props | Qué devuelve |
-|---|---|---|---|
-| T1 | `Header` | `name`, `links` | `<header>` con `<h1>` y `<nav aria-label="Principal">` con `<ul>/<li>/<a>` |
-| T2 | `Footer` | `contact` | `<footer>` con la dirección y enlaces `tel:` y `mailto:` |
-| T3 | `MovieCard` | `movie` | `<article>` con `<img alt={title}>`, `<h3>` y `★ rating` |
-| T4 | `Showtimes` | `times` | `<ul>` de horas, o `<p>Sin funciones hoy</p>` si la lista está vacía |
-| T5 | `MovieList` | `movies` | `<ul>` con un `<li key={movie.id}>` y una `MovieCard` por película |
-| T6 | `Synopsis` | `text` | `<p>{text}</p>`: texto literal, nunca HTML |
-| T7 | `Hero` | `movie` | `<section aria-label="Destacada">` con `<h2>` y el enlace «Ver horarios» |
-| T8 | `AgentMessage` | `author`, `text` | `<p><strong>{author}:</strong> <span>{text}</span></p>` |
+| Tarea | Componente | Props | Qué devuelve | Autor |
+|---|---|---|---|---|
+| T1 | `Header` | `name`, `links` | `<header>` con `<h1>` y `<nav aria-label="Principal">` con `<ul>/<li>/<a>` | Alumno (sin IA) |
+| T2 | `Footer` | `contact` | `<footer>` con la dirección y enlaces `tel:` y `mailto:` | Alumno (sin IA) |
+| T3 | `MovieCard` | `movie` | `<article>` con `<img alt={title}>`, `<h3>` y `★ rating` | Alumno (sin IA) |
+| T4 | `Showtimes` | `times` | `<ul>` de horas, o `<p>Sin funciones hoy</p>` si la lista está vacía | Alumno (sin IA) |
+| T5 | `MovieList` | `movies` | `<ul>` con un `<li key={movie.id}>` y una `MovieCard` por película | Claude Code |
+| T6 | `Synopsis` | `text` | `<p>{text}</p>`: texto literal, nunca HTML | Claude Code |
+| T7 | `Hero` | `movie` | `<section aria-label="Destacada">` con `<h2>` y el enlace «Ver horarios» | Claude Code |
+| T8 | `AgentMessage` | `author`, `text` | `<p><strong>{author}:</strong> <span>{text}</span></p>` | Claude Code |
 
 ## 🔗 Enlaces de Acceso Local (Desarrollo)
 
@@ -89,7 +89,7 @@ Lab09-Extra-React/
     └── duel/
         ├── tests/             # T1…T8: el verificador (protegido)
         ├── support.js         # Selector de origen, watchConsole, failImages, xssFlag (protegido)
-        ├── team/              # Nuestros 8 componentes ✍️
+        ├── team/              # T1–T4 del alumno (sin IA) + T5–T8 de Claude Code ✍️
         ├── ai/                # Las 8 respuestas originales de la IA (protegido)
         └── fixed/             # La copia de ai/ arreglada ✍️
 ```
@@ -99,12 +99,18 @@ Lab09-Extra-React/
 | Origen | Comando | Test Files | Tests | Evidencia |
 |---|---|---|---|---|
 | `team/` (inicio) | `npm run duel` | 8 failed | 43 failed | `02_duel_inicial` |
-| `team/` (final) | `npm run duel` | **8 passed** | **43 passed** | `25_duel_final_team` |
+| `team/` (todo Claude Code) | `npm run duel` | **8 passed** | **43 passed** | `25_duel_final_team` |
+| `team/` (T1–T4 reiniciados) | `npm run duel` | 5 failed \| 3 passed | 28 failed \| 15 passed | `27_reinicio_T1_T4_rojo` |
+| `team/` (final: T1–T4 del alumno) | `npm run duel` | **8 passed** | **43 passed** | `32_duel_final_alumno_T1_T4` |
 | `ai/` | `npm run duel:ai` | 6 failed \| 2 passed | 14 failed \| 29 passed | `12_duel_ai` |
 | `fixed/` (inicio) | `npm run duel:fixed` | 6 failed \| 2 passed | 14 failed \| 29 passed | `13_duel_fixed_inicial` |
-| `fixed/` (final) | `npm run duel:fixed` | **8 passed** | **43 passed** | `26_duel_fixed_final` |
+| `fixed/` (final) | `npm run duel:fixed` | **8 passed** | **43 passed** | `33_duel_fixed_final` |
 
-Nuestros 8 componentes pasaron **al primer intento**. La copia de la IA bajó de 14 a 0 pruebas en rojo en seis arreglos: **14 → 9 → 8 → 7 → 5 → 3 → 0**.
+La guía pedía escribir **T1 a T4 sin IA**. Por eso, aunque Claude Code había escrito los ocho al primer intento, el alumno reinició T1–T4 y los rehízo en VS Code: **28 → 23 → 17 → 6 → 0** pruebas en rojo. T1 necesitó 2 ejecuciones, porque la primera fue sin guardar el archivo; T2, T3 y T4, una. T5 pasó a verde a la vez que T3, porque `MovieList` usa `MovieCard`. T5–T8 siguen siendo los de Claude Code.
+
+> ⚠️ **Verde no significa terminado:** las pruebas pasaron con `MovieCard` y `Showtimes` sin `className="movie-card"` ni `className="showtimes"`, y la cartelera salió sin estilos (evidencia 31). Se corrigió en `cd32eee`. Las pruebas verifican roles y accesibilidad, no la apariencia.
+
+La copia de la IA bajó de 14 a 0 pruebas en rojo en seis arreglos: **14 → 9 → 8 → 7 → 5 → 3 → 0**.
 
 ## 🐞 Los 6 Fallos de la IA
 
@@ -127,12 +133,19 @@ Las reglas del proyecto están en `CLAUDE.md`. `.claude/settings.json` **bloquea
 - **test-reviewer:** revisor de **solo lectura** (`Read`, `Grep`, `Glob`, `Bash`). Ejecuta `duel`, `duel:ai` o `duel:fixed`, resume por tarea T1–T8 y clasifica cada fallo como ruidoso / avisa / silencioso. Se usó en el estado inicial (43 en rojo, todos ruidosos) y en el duelo con la IA (6 tareas: 1 ruidosa, 1 que avisa y 4 silenciosas).
 - **react-fixer:** solo puede editar `src/duel/fixed/`. Arregla **un fallo por ronda** con el cambio mínimo, ejecuta `duel:fixed` y explica qué hacía el código, por qué React lo trata así y qué hace ahora. No hace commits: cada arreglo se confirmó por separado. Propuso dos mejoras opcionales que se rechazaron para que cada cambio fuera mínimo (ver el paso 15 del entregable).
 
-**Reparto del trabajo:** Claude Code escribió `src/duel/team/`, `src/duel/fixed/`, los scripts de evidencias y la documentación. El alumno dirigió los pasos, revisó los resultados y tomó las capturas del navegador (01, 20, 21, 22 y 23).
+**Reparto del trabajo:** el **alumno** escribió sin IA **T1 a T4** (`Header`, `Footer`, `MovieCard` y `Showtimes`), dirigió los pasos, revisó los resultados y tomó las capturas del navegador y de su terminal (01, 20–23 y 27–31). **Claude Code** escribió **T5 a T8** (`MovieList`, `Synopsis`, `Hero` y `AgentMessage`), todo `src/duel/fixed/`, los scripts de evidencias y la documentación.
 
 ## 📦 Estructura de Commits del Repositorio
 
 Historial en commits atómicos documentados en español (un commit por componente y por arreglo):
-- *(último)* - Pasos 13 a 15, README del laboratorio y evidencias finales
+- *(último)* - Entregable: tareas 1 a 4 rehechas por el alumno
+- `cd32eee` - Clases CSS de MovieCard y Showtimes para recuperar los estilos *(alumno)*
+- `44e779c` - T4: Showtimes escrito por el alumno *(alumno)*
+- `ea32f87` - T3: MovieCard escrito por el alumno *(alumno)*
+- `67fe34e` - T2: Footer escrito por el alumno *(alumno)*
+- `b72a4f0` - T1: Header escrito por el alumno *(alumno)*
+- `b210d81` - Reinicio de T1 a T4 al estado del docente para escribirlos sin IA *(alumno)*
+- `0611d0b` - Pasos 13 a 15, README del laboratorio y evidencias finales
 - `af92033` - Entregable: pasos 10 a 12 (arreglos de la copia de la IA y keys en T5)
 - `4b55605` - Arreglo T6 (fixed): Synopsis como texto, sin dangerouslySetInnerHTML; duel:fixed en verde
 - `51dafa2` - Arreglo T5 (fixed): MovieList usa key={movie.id} en vez del índice (quedan 3 en rojo)
@@ -159,7 +172,7 @@ Historial en commits atómicos documentados en español (un commit por component
 
 ## 📸 Capturas y Evidencias
 
-Todas las evidencias están en `Evidencias_extra/`. Cada ejecución de pruebas guarda la salida real (`.txt`, con `EXIT=<código>` al final) y su imagen de terminal (`.png`, generada con `scripts/terminal.mjs`). Las capturas 01 y 20–23 las tomó el alumno en Chrome; la 11, Playwright.
+Todas las evidencias están en `Evidencias_extra/`. Cada ejecución de pruebas guarda la salida real (`.txt`, con `EXIT=<código>` al final) y su imagen de terminal (`.png`, generada con `scripts/terminal.mjs`). Las capturas 01, 20–23 y 27–31 las tomó el alumno (Chrome y su terminal); la 11, Playwright. Las evidencias 03–06 corresponden a la primera versión de T1–T4, la de Claude Code, que después se sustituyó por la del alumno (27–30).
 
 1. **Estado inicial – página en blanco:**
    `npm run dev` con los componentes sin escribir: `Uncaught Error: TODO(team): write Header in src/duel/team/Header.jsx`.
@@ -244,6 +257,31 @@ Todas las evidencias están en `Evidencias_extra/`. Cada ejecución de pruebas g
 
 26. **Verificación final `npm run duel:fixed` – 43/43:** [Salida .txt](Evidencias_extra/26_duel_fixed_final.txt)
     ![Duel fixed final](Evidencias_extra/26_duel_fixed_final.png)
+
+27. **Reinicio de T1–T4 al estado del docente (alumno):**
+    `Test Files 5 failed | 3 passed (8)`, `Tests 28 failed | 15 passed (43)`. T5 también cae porque `MovieList` usa `MovieCard`.
+    ![Reinicio T1-T4](Evidencias_extra/27_reinicio_T1_T4_rojo.png)
+
+28. **T1 `Header` escrito por el alumno – 23 failed | 20 passed:**
+    Segunda ejecución; la primera falló porque el archivo no estaba guardado.
+    ![Header del alumno](Evidencias_extra/28_T1_header_alumno.png)
+
+29. **T3 `MovieCard` escrito por el alumno – 6 failed | 37 passed:**
+    T5 `MovieList` pasa a verde a la vez; se ve también el commit `ea32f87`.
+    ![MovieCard del alumno](Evidencias_extra/29_T3_moviecard_alumno.png)
+
+30. **T4 `Showtimes` escrito por el alumno – 43/43 en verde:**
+    ![Showtimes del alumno, todo en verde](Evidencias_extra/30_T4_showtimes_todo_verde.png)
+
+31. **Pruebas en verde, página sin estilos:**
+    Tarjetas sin `className="movie-card"` (pósters a todo el ancho y montados unos sobre otros), el mensaje del agente como texto y `window.__xss` = `undefined`. Se corrigió añadiendo las clases (`cd32eee`).
+    ![Tarjetas sin estilos y agente como texto](Evidencias_extra/31_agente_texto_xss_undefined.png)
+
+32. **Verificación final `npm run duel` con T1–T4 del alumno – 43/43:** [Salida .txt](Evidencias_extra/32_duel_final_alumno_T1_T4.txt)
+    ![Duel final con T1-T4 del alumno](Evidencias_extra/32_duel_final_alumno_T1_T4.png)
+
+33. **Verificación final `npm run duel:fixed` – 43/43:** [Salida .txt](Evidencias_extra/33_duel_fixed_final.txt)
+    ![Duel fixed final](Evidencias_extra/33_duel_fixed_final.png)
 
 ---
 

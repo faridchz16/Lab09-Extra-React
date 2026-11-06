@@ -172,40 +172,163 @@ Con `terminal.mjs` se creó `02_duel_inicial.png` a partir de `02_duel_inicial.t
 
 ### Pasos 5 y 6 — Escribir los componentes de uno en uno
 
+> **Autoría de los componentes de `src/duel/team/`:**
+> - **T1 a T4** (`Header`, `Footer`, `MovieCard`, `Showtimes`) los escribió **el alumno**, sin
+>   IA, en VS Code.
+> - **T5 a T8** (`MovieList`, `Synopsis`, `Hero`, `AgentMessage`) los escribió **Claude Code**.
+>
+> La guía pedía escribir T1 a T4 sin IA. Al principio Claude Code había escrito los ocho, así que
+> el alumno reinició T1 a T4 y los rehízo él mismo (ver «Rehechura de T1 a T4»).
+
+#### Primera pasada: Claude Code escribe los ocho (histórico)
+
 Se escribió cada componente en `src/duel/team/`, se ejecutó `npm run duel` justo después y se
-hizo un commit por componente. Todos pasaron en el **primer intento**; la columna «Duel» muestra
-el total acumulado después de cada uno.
+hizo un commit por componente. Los ocho pasaron al **primer intento**. Los resultados de **T5 a
+T8 siguen vigentes**. Las versiones de T1 a T4 de esta pasada **se sustituyeron** después por las
+del alumno; se dejan sus filas como registro.
 
-| Tarea | Componente | Intentos | Pruebas de la tarea | Duel tras el cambio | Evidencia | Commit |
-|---|---|---|---|---|---|---|
-| T1 | `Header` | 1 | 5/5 ✅ | 5/43 | `03_duel_T1_header` | `7e4335f` |
-| T2 | `Footer` | 1 | 6/6 ✅ | 11/43 | `04_duel_T2_footer` | `21d2d97` |
-| T3 | `MovieCard` | 1 | 6/6 ✅ | 17/43 | `05_duel_T3_moviecard` | `932fe28` |
-| T4 | `Showtimes` | 1 | 6/6 ✅ | 23/43 | `06_duel_T4_showtimes` | `65fb6c5` |
-| T5 | `MovieList` | 1 | 5/5 ✅ | 28/43 | `07_duel_T5_movielist` | `0868e71` |
-| T6 | `Synopsis` | 1 | 5/5 ✅ | 33/43 | `08_duel_T6_synopsis` | `03c2d59` |
-| T7 | `Hero` | 1 | 5/5 ✅ | 38/43 | `09_duel_T7_hero` | `02bbc69` |
-| T8 | `AgentMessage` | 1 | 5/5 ✅ | **43/43** | `10_duel_T8_agentmessage_verde` | `35d9d5a` |
+| Tarea | Componente | Intentos | Pruebas de la tarea | Duel tras el cambio | Evidencia | Commit | Estado |
+|---|---|---|---|---|---|---|---|
+| T1 | `Header` | 1 | 5/5 ✅ | 5/43 | `03_duel_T1_header` | `7e4335f` | Sustituido por el del alumno |
+| T2 | `Footer` | 1 | 6/6 ✅ | 11/43 | `04_duel_T2_footer` | `21d2d97` | Sustituido por el del alumno |
+| T3 | `MovieCard` | 1 | 6/6 ✅ | 17/43 | `05_duel_T3_moviecard` | `932fe28` | Sustituido por el del alumno |
+| T4 | `Showtimes` | 1 | 6/6 ✅ | 23/43 | `06_duel_T4_showtimes` | `65fb6c5` | Sustituido por el del alumno |
+| T5 | `MovieList` | 1 | 5/5 ✅ | 28/43 | `07_duel_T5_movielist` | `0868e71` | **Vigente** (Claude Code) |
+| T6 | `Synopsis` | 1 | 5/5 ✅ | 33/43 | `08_duel_T6_synopsis` | `03c2d59` | **Vigente** (Claude Code) |
+| T7 | `Hero` | 1 | 5/5 ✅ | 38/43 | `09_duel_T7_hero` | `02bbc69` | **Vigente** (Claude Code) |
+| T8 | `AgentMessage` | 1 | 5/5 ✅ | **43/43** | `10_duel_T8_agentmessage_verde` | `35d9d5a` | **Vigente** (Claude Code) |
 
-Decisiones que hicieron pasar las pruebas a la primera (leídas antes en el verificador):
+Decisiones de Claude Code en T5 a T8:
 
-- **T1 `Header`:** `<header>` (rol `banner`), `<h1>{name}</h1>` y
-  `<nav aria-label="Principal">` con `<ul>`/`<li>`/`<a href>`; `key={link.href}`.
-- **T2 `Footer`:** `className` (no `class`), `<footer>` (rol `contentinfo`) y los enlaces
-  `` `tel:${phone}` `` y `` `mailto:${email}` `` construidos desde el prop.
-- **T3 `MovieCard`:** `<article>` e `<img alt={movie.title}>`; sin `alt` la imagen no tiene
-  nombre accesible.
-- **T4 `Showtimes`:** se compara `times.length === 0` de forma explícita. Con
-  `times.length && <ul>` React dibujaría un `0` suelto cuando la lista está vacía.
 - **T5 `MovieList`:** `key={movie.id}`, un identificador estable de cada película, no el índice.
 - **T6 `Synopsis`** y **T8 `AgentMessage`:** el texto va como `{text}`, que React escapa: las
   etiquetas se ven literalmente y no se ejecutan. Nunca `dangerouslySetInnerHTML`.
 - **T7 `Hero`:** el prop se llama `movie`, igual que lo pasa `App.jsx`.
 
-**Resultado final:** `Test Files 8 passed (8)`, `Tests 43 passed (43)`
-(`Evidencias_extra/10_duel_T8_agentmessage_verde.txt` y `.png`).
+#### Rehechura de T1 a T4 por el alumno (sin IA)
 
-**Cartelera completa:** `Evidencias_extra/11_cartelera_team.png`, tomada con `capture.mjs`. La
+**1. Reinicio.** El alumno devolvió `Header.jsx`, `Footer.jsx`, `MovieCard.jsx` y
+`Showtimes.jsx` al estado del docente (`throw new Error("TODO(team): …")`), en el commit
+`b210d81` «Reinicio de T1 a T4 al estado del docente para escribirlos sin IA».
+`npm run duel` dio **`Test Files 5 failed | 3 passed (8)`, `Tests 28 failed | 15 passed (43)`**
+(`27_reinicio_T1_T4_rojo.png`). Fallaron las 22 pruebas de T1–T4 y además **las 5 de T5**:
+`MovieList` (de Claude Code) importa `MovieCard`, y al lanzar esta su `TODO(team)`, la lista
+entera revienta. Solo T6, T7 y T8 (15 pruebas) siguieron en verde.
+
+**2. Escritura de los cuatro componentes en VS Code, de uno en uno, con `npm run duel` y un
+commit por componente:**
+
+| Tarea | Componente | Ejecuciones de `duel` | Resultado de `duel` | Evidencia | Commit |
+|---|---|---|---|---|---|
+| — | (reinicio) | 1 | 28 failed \| 15 passed | `27_reinicio_T1_T4_rojo.png` | `b210d81` |
+| T1 | `Header` | **2**: la 1.ª falló porque el archivo **no estaba guardado** (Vitest leyó la versión del disco, que todavía lanzaba `TODO(team)`); la 2.ª, ya guardado, pasó | 23 failed \| 20 passed | `28_T1_header_alumno.png` | `b72a4f0` |
+| T2 | `Footer` | 1 | 17 failed \| 26 passed | — | `67fe34e` |
+| T3 | `MovieCard` | 1 | 6 failed \| 37 passed (**T5 pasó a verde a la vez**, porque ya tenía su `MovieCard`) | `29_T3_moviecard_alumno.png` | `ea32f87` |
+| T4 | `Showtimes` | 1 | **43 passed (43)** | `30_T4_showtimes_todo_verde.png` | `44e779c` |
+| — | Clases CSS (ver abajo) | — | 43 passed | `31_agente_texto_xss_undefined.png` | `cd32eee` |
+
+**3. Explicación del código actual de cada componente del alumno:**
+
+- **T1 `Header`** (`src/duel/team/Header.jsx`):
+  ```jsx
+  <header>
+    <h1>{name}</h1>
+    <nav aria-label="Principal">
+      <ul>
+        {links.map((link) => (
+          <li key={link.href}>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </header>
+  ```
+  - `<header>` da el rol `banner`; `<h1>{name}</h1>` es el encabezado de nivel 1 con el nombre
+    que llega por props, sin texto fijo, así que con «Cine Norte» también funciona.
+  - `<nav aria-label="Principal">` hace que la navegación tenga el nombre accesible que busca
+    `getByRole("navigation", { name: "Principal" })`.
+  - `links.map(...)` crea un `<li>` con un `<a href>` por enlace, en el mismo orden. La
+    `key={link.href}` es estable y única (cada enlace apunta a un sitio distinto), así que
+    React no avisa.
+  - No necesita `className`: `index.css` da estilo con selectores de elemento
+    (`header`, `header h1`, `header nav ul`).
+
+- **T2 `Footer`** (`src/duel/team/Footer.jsx`):
+  ```jsx
+  <footer>
+    <p>{contact.address}</p>
+    <p><a href={`tel:${contact.phone}`}>{contact.phone}</a></p>
+    <p><a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+  </footer>
+  ```
+  - `<footer>` da el rol `contentinfo`; la dirección va en un `<p>` como texto exacto, para
+    `getByText(contact.address)`.
+  - Los `href` se construyen con *template literals* a partir del prop: `tel:` + teléfono y
+    `mailto:` + correo. El texto del enlace (su nombre accesible) es el propio teléfono o
+    correo.
+  - No lleva atributo de clase, así que no puede caer en el error de la IA (`class` en vez de
+    `className`). Tampoco lo necesita: el CSS usa el selector `footer`.
+
+- **T3 `MovieCard`** (`src/duel/team/MovieCard.jsx`):
+  ```jsx
+  <article className="movie-card">
+    <img src={movie.image} alt={movie.title} />
+    <h3>{movie.title}</h3>
+    <p>★ {movie.rating}</p>
+  </article>
+  ```
+  - `<article>` da el rol `article`, que también comprueba T5 («cada elemento contiene una
+    tarjeta»).
+  - `alt={movie.title}` da a la imagen su nombre accesible. Es justo lo que le faltaba a la IA.
+  - `<h3>` con el título y `★ {movie.rating}`: React junta `"★ "` y `4.5` en el mismo `<p>`, y
+    `getByText("★ 4.5")` lo encuentra.
+  - `className="movie-card"` se añadió después (punto 4).
+
+- **T4 `Showtimes`** (`src/duel/team/Showtimes.jsx`):
+  ```jsx
+  if (times.length === 0) {
+    return <p>Sin funciones hoy</p>;
+  }
+  return (
+    <ul className="showtimes">
+      {times.map((time) => <li key={time}>{time}</li>)}
+    </ul>
+  );
+  ```
+  - Comprueba la lista vacía **de forma explícita** con `times.length === 0` y devuelve solo el
+    mensaje. Así no hay `<ul>` vacío ni el «0» suelto que dibujaba la IA con
+    `times.length && …`.
+  - Con horas, un `<li>` por hora en orden, con `key={time}` (las horas de una película no se
+    repiten).
+  - `className="showtimes"` se añadió después (punto 4).
+
+Los cuatro archivos conservan el comentario de cabecera del docente (`// TODO(team) · Task N`
+con el contrato de props). No afecta al funcionamiento, pero la etiqueta `TODO` ya no
+corresponde.
+
+**4. Las pruebas pasaron sin las clases CSS (evidencia 31).** Las primeras versiones del alumno de
+`MovieCard` (`<article>`) y `Showtimes` (`<ul>`) **no tenían `className`**, y aun así
+`npm run duel` dio 43/43. Al abrir la cartelera en el navegador, las tarjetas y los horarios
+salieron **sin estilos**: los pósters a todo el ancho y montados unos sobre otros, sin el fondo
+blanco ni la sombra de la tarjeta, y los horarios como una lista con viñetas en lugar de
+«píldoras». La causa es que `index.css` les da estilo con `.movie-card` y `.showtimes`. Se
+corrigió en el commit `cd32eee` «Clases CSS de MovieCard y Showtimes para recuperar los
+estilos» (`<article className="movie-card">` y `<ul className="showtimes">`).
+`31_agente_texto_xss_undefined.png` muestra la página durante esa revisión: las tarjetas sin
+estilo, el mensaje del agente como texto y `window.__xss` = `undefined`.
+
+**Lección:** las pruebas verifican **roles, nombres accesibles, texto y comportamiento**, no la
+apariencia. Que estén en verde no garantiza que la página se vea bien: hay que mirarla. Es la
+otra cara de consultar por rol en lugar de por clase. La prueba no se rompe al cambiar estilos,
+pero tampoco detecta que se perdieron.
+
+**Resultado final de `team/`** (T1–T4 del alumno y T5–T8 de Claude Code), verificado al cerrar
+el laboratorio: `Test Files 8 passed (8)`, `Tests 43 passed (43)`
+(`32_duel_final_alumno_T1_T4.txt` / `.png`).
+
+**Cartelera completa:** `Evidencias_extra/11_cartelera_team.png`, tomada con `capture.mjs`
+durante la primera pasada, con los ocho componentes de Claude Code. La
 sinopsis hostil y el mensaje del agente se ven como texto literal (`<img src=x onerror=…>`), la
 película «Ruta 91» muestra «Sin funciones hoy» y la consola del navegador
 (`11_cartelera_team.txt`) no tiene errores ni avisos de React; `window.__xss` quedó
@@ -213,9 +336,10 @@ película «Ruta 91» muestra «Sin funciones hoy» y la consola del navegador
 
 ### Paso 7 — Pedir los componentes a una IA (omitido)
 
-Se omite: en este laboratorio los componentes de `src/duel/team/` ya los escribió Claude Code
-(una IA) en los pasos 5 y 6, siempre comprobados contra el verificador. La comparación con otra
-IA se hace en la Parte 3 con las respuestas fijas de `src/duel/ai/`.
+Se omite: en este laboratorio los componentes T5 a T8 de `src/duel/team/` ya los escribió
+Claude Code (una IA) en los pasos 5 y 6, siempre comprobados contra el verificador. T1 a T4 los
+escribió el alumno sin IA. La comparación con otra IA se hace en la Parte 3 con las respuestas
+fijas de `src/duel/ai/`.
 
 ## 4. Parte 3 — El duelo con la IA (`npm run duel:ai`)
 
@@ -540,17 +664,24 @@ que escapa primero; aquí `white-space: pre-line` en CSS).
 
 ## 7. Paso 15 — Uso de IA en este laboratorio
 
-Todo el código de `src/duel/team/` y `src/duel/fixed/`, los scripts de `scripts/` y la redacción
-de este entregable los produjo **Claude Code** (con los subagentes `test-reviewer` y
-`react-fixer`) a partir de las instrucciones del alumno. **El alumno** decidió los pasos,
-revisó los resultados y **tomó las capturas del navegador** (`01`, `20`, `21`, `22`, `23`). El
-oráculo fueron siempre las pruebas, que la IA no podía editar (reglas `deny`).
+**Claude Code** (con los subagentes `test-reviewer` y `react-fixer`) produjo, a partir de las
+instrucciones del alumno:
+- los componentes **T5 a T8** de `src/duel/team/`;
+- todo `src/duel/fixed/`;
+- los scripts de `scripts/`;
+- la redacción de este entregable y del README.
+
+**El alumno** escribió sin IA los componentes **T1 a T4** de `src/duel/team/`, decidió los pasos,
+revisó los resultados y **tomó las capturas del navegador y de su terminal** (`01`, `20`–`23` y
+`27`–`31`). El oráculo fueron siempre las pruebas, que la IA no podía editar (reglas `deny`).
 
 | # | Qué se le pidió a Claude Code | Qué respondió / hizo | Aceptado o rechazado, y por qué |
 |---|---|---|---|
 | 1 | Pasos 2–4: analizar los datos y las pruebas T1/T2 sin escribir código, y ejecutar `duel` con `test-reviewer` | Respuestas del paso 2, tablas de T1/T2, explicación de roles y `watchConsole`, 43 pruebas en rojo (todas ruidosas) | **Aceptado.** Se comprobó contra `movies.js`, los archivos de prueba y la salida real. |
 | 2 | Scripts de evidencias con Playwright vía `npx` (`capture.mjs`, `terminal.mjs`) | Los creó con un cargador que relanza el script con `npx -p playwright@1.64.1`, más `evidence.sh` para guardar `.txt` + `.png` | **Aceptado con dos correcciones de la propia IA:** descartó Playwright 1.65.0 por estar publicado ese mismo día (prefirió una versión con semanas de uso) y, al ver colores ANSI en la salida, añadió `NO_COLOR=1`. Las salidas de Testing Library conservan algunos códigos de color en los `.txt`; el `.png` los oculta. |
-| 3 | Pasos 5–6: escribir los 8 componentes de `team/` de uno en uno, con un commit por componente | Los 8 pasaron **al primer intento** (43/43) | **Aceptado.** Lo decidió el verificador, no la confianza en la IA. Se comprobó también en el navegador (`11_cartelera_team.png`, consola sin avisos). |
+| 3 | Pasos 5–6: escribir los 8 componentes de `team/` de uno en uno, con un commit por componente | Los 8 pasaron **al primer intento** (43/43) | **T5–T8 aceptados.** Lo decidió el verificador, no la confianza en la IA; se comprobó también en el navegador (`11_cartelera_team.png`, consola sin avisos). **T1–T4 rechazados después** (fila 3b). |
+| 3b | — (decisión del alumno, sin IA) | El alumno reinició T1–T4 al estado del docente (`b210d81`: 28 failed \| 15 passed) y los escribió él mismo en VS Code: T1 en 2 ejecuciones (la 1.ª sin guardar el archivo), T2, T3 y T4 al primer intento, hasta 43/43 | **Versiones de Claude Code de T1–T4 rechazadas** porque **la guía pedía escribir T1 a T4 sin IA**. Las del alumno son las vigentes (`b72a4f0`, `67fe34e`, `ea32f87`, `44e779c`), y la IA no las tocó. |
+| 3c | — (decisión del alumno) | Al ver la cartelera sin estilos, el alumno añadió `className="movie-card"` y `className="showtimes"` (`cd32eee`) | **Corrección propia.** Las pruebas estaban en verde sin las clases porque verifican roles y accesibilidad, no la apariencia (evidencia 31). |
 | 4 | Paso 7: pedir los componentes a otra IA | No se hizo | **Omitido**, porque `team/` ya lo escribió Claude Code; la comparación con otra IA la da `src/duel/ai/`. |
 | 5 | Pasos 8–9: `duel:ai` con `test-reviewer` | 14 fallos en 6 tareas: 1 ruidoso, 1 avisa, 4 silenciosos | **Aceptado.** Las cifras y los mensajes coinciden con la ejecución propia (`12_duel_ai.txt`). |
 | 6 | Paso 11: `react-fixer` arregla los 6 fallos de `fixed/`, uno por ronda | Seis arreglos mínimos con su explicación (14 → 9 → 8 → 7 → 5 → 3 → 0) | **Aceptados los seis.** Se volvió a ejecutar `duel:fixed` después de cada uno. |
@@ -559,6 +690,7 @@ oráculo fueron siempre las pruebas, que la IA no podía editar (reglas `deny`).
 | 9 | Paso 13: cambiar `Synopsis` a `dangerouslySetInnerHTML` sin commit y detenerse | Hizo el cambio, ejecutó `duel` (3 fallos en T6) y se detuvo | **Aceptado.** El alumno tomó las capturas `20` y `21`, y la IA revirtió con `git checkout`. |
 | 10 | Numerar las evidencias | Su salida del paso 13 chocaba con la captura `20` del alumno | **Corregido:** se renombró a `24_duel_xss_dangerously`. |
 | 11 | Pasos 13–15, README y verificación final | Esta redacción, el README y la ejecución final de `duel` y `duel:fixed` (43/43 y 43/43) | Revisión del alumno pendiente antes de la entrega. |
+| 12 | Actualizar el entregable y el README con la rehechura de T1–T4: leer el código del alumno y explicarlo, añadir las evidencias 27–31 y volver a verificar | Explicación de los cuatro componentes, autoría separada en los pasos 5–6, esta tabla y verificación final (`32_duel_final_alumno_T1_T4` y `33_duel_fixed_final`: 43/43 y 43/43) | La IA solo leyó y documentó el código del alumno, sin modificarlo. |
 
 **Límites de lo que hizo la IA.** Claude Code no vio la consola de Chrome del alumno: la única
 consola que vio fue la de Playwright (`11_cartelera_team.txt`). Las afirmaciones sobre
@@ -584,7 +716,14 @@ Todas están en `Evidencias_extra/`. Cada salida de pruebas tiene un `.txt` (la 
 | 23 | `23_agente_como_texto_tras_arreglo.png` | El mensaje del agente como texto, tras el arreglo | Alumno |
 | 24 | `24_duel_xss_dangerously` | `duel` con la `Synopsis` insegura: 3 en rojo (T6) | Claude Code |
 | 25 | `25_duel_final_team` | `duel` final: 43/43 | Claude Code |
-| 26 | `26_duel_fixed_final` | `duel:fixed` final: 43/43 | Claude Code |
+| 26 | `26_duel_fixed_final` | `duel:fixed` final: 43/43 (antes de rehacer T1–T4) | Claude Code |
+| 27 | `27_reinicio_T1_T4_rojo.png` | `duel` tras reiniciar T1–T4: 28 failed \| 15 passed (T5 también cae) | Alumno |
+| 28 | `28_T1_header_alumno.png` | `duel` tras el `Header` del alumno: 23 failed \| 20 passed | Alumno |
+| 29 | `29_T3_moviecard_alumno.png` | `duel` tras el `MovieCard` del alumno: 6 failed \| 37 passed (T5 en verde) y su commit | Alumno |
+| 30 | `30_T4_showtimes_todo_verde.png` | `duel` tras el `Showtimes` del alumno: 43 passed y su commit | Alumno |
+| 31 | `31_agente_texto_xss_undefined.png` | Tarjetas sin las clases CSS (sin estilos), mensaje del agente como texto y `window.__xss` = `undefined` | Alumno |
+| 32 | `32_duel_final_alumno_T1_T4` | `duel` final con T1–T4 del alumno: 43/43 | Claude Code |
+| 33 | `33_duel_fixed_final` | `duel:fixed` final: 43/43 | Claude Code |
 
 ## 9. Conclusiones
 
@@ -603,7 +742,11 @@ Todas están en `Evidencias_extra/`. Cada salida de pruebas tiene un `.txt` (la 
    `{text}` por defecto, como Django con `{{ variable }}`. `dangerouslySetInnerHTML` es el
    `|safe` de React y no debe usarse con datos ajenos. Las capturas 20 y 21 muestran la
    diferencia: `window.__xss` = `1` frente a `undefined`.
-6. **La IA es útil si se la verifica y se la acota.** Claude Code escribió `team/` y arregló
+6. **La IA es útil si se la verifica y se la acota.** Claude Code escribió T5–T8 y arregló
    `fixed/` rápido y bien, pero porque trabajó contra pruebas que no podía tocar (reglas
    `deny`), con un revisor de solo lectura y un arreglo por commit. La otra IA, sin verificador,
-   falló 6 de 8 tareas.
+   falló 6 de 8 tareas. T1–T4 se rehicieron sin IA porque así lo pedía la guía: el mismo
+   verificador sirve para comprobar el código de una persona y el de una IA.
+7. **Verde no significa terminado.** Las pruebas pasaron con `MovieCard` y `Showtimes` sin sus
+   clases CSS, y la página se veía rota. Las pruebas cubren la semántica, la accesibilidad y el
+   comportamiento; la apariencia hay que revisarla en el navegador (evidencia 31).
