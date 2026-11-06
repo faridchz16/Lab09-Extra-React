@@ -1,6 +1,6 @@
-// TODO(team) · Task 6
-// Props: text (string, written by a third party).
-// Returns a <p> that shows the text exactly as it is, never as HTML.
+// Task 6 · A movie synopsis written by a third party (untrusted data).
+// Props: text (string).
+// {text} is escaped by React, so any markup in it is shown as text and never runs.
 export default function Synopsis({ text }) {
-  throw new Error("TODO(team): write Synopsis in src/duel/team/Synopsis.jsx");
+  return <p className="synopsis">{text}</p>;
 }
